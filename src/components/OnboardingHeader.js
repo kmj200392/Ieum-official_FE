@@ -8,13 +8,15 @@ export default function Header() {
             <div className={styles.headerContent}>
                 {/* 로고 */}
                 <div className={styles.logo}>
-                    <Image
-                        src="/방패 로고.png"
-                        alt="고려대학교 정보대학 로고"
-                        width={60}
-                        height={60}
-                        priority
-                    />
+                    <a href="/">
+                        <Image
+                            src="/방패 로고.png"
+                            alt="고려대학교 정보대학 로고"
+                            width={60}
+                            height={60}
+                            priority
+                        />
+                    </a>
                 </div>
 
                 {/* 네비게이션 메뉴 */}

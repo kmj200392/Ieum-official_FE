@@ -23,6 +23,11 @@
     align-items: center;
 }
 
+.logo a {
+    outline: none;
+    text-decoration: none;
+}
+
 .nav {
     display: flex;
     align-items: center;

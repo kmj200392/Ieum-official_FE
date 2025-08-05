@@ -23,6 +23,11 @@
     align-items: center;
 }
 
+.logo a {
+    outline: none;
+    text-decoration: none;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .headerContent {

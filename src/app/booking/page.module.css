@@ -222,6 +222,17 @@
     cursor: not-allowed;
 }
 
+/* 선택된 슬롯 */
+.selected {
+    background: #000000 !important;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.selected:hover {
+    background: #333333 !important;
+}
+
 .purpose {
     font-size: 0.7rem;
     color: #000;

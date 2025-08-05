@@ -26,6 +26,9 @@ export default function BookingPage() {
         2: { 15: RESERVATION_STATES.PENDING, 16: RESERVATION_STATES.PENDING }, // TUE 3PM-4PM 예약 중
     });
 
+    // 선택된 슬롯들 관리
+    const [selectedSlots, setSelectedSlots] = useState(new Set());
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -55,18 +58,132 @@ export default function BookingPage() {
         return state === RESERVATION_STATES.AVAILABLE;
     };
 
+    // 슬롯 키 생성 (dayIndex:hourIndex 형태)
+    const getSlotKey = (dayIndex, hourIndex) => `${dayIndex}:${hourIndex}`;
+
+    // 슬롯 키에서 dayIndex와 hourIndex 추출
+    const parseSlotKey = (slotKey) => {
+        const [dayIndex, hourIndex] = slotKey.split(':').map(Number);
+        return { dayIndex, hourIndex };
+    };
+
+    // 연속된 슬롯인지 확인
+    const isConsecutive = (slotKey1, slotKey2) => {
+        const { dayIndex: day1, hourIndex: hour1 } = parseSlotKey(slotKey1);
+        const { dayIndex: day2, hourIndex: hour2 } = parseSlotKey(slotKey2);
+
+        // 같은 요일에서 연속된 시간
+        if (day1 === day2 && Math.abs(hour1 - hour2) === 1) return true;
+
+        // 요일 경계를 넘는 연속 (예: 화요일 23시 -> 수요일 0시)
+        if (day1 === day2 - 1 && hour1 === 23 && hour2 === 0) return true;
+        if (day1 === day2 + 1 && hour1 === 0 && hour2 === 23) return true;
+
+        return false;
+    };
+
+    // 선택된 슬롯이 연속된 그룹인지 확인
+    const getConsecutiveGroups = (slots) => {
+        if (slots.size === 0) return [];
+
+        const sortedSlots = Array.from(slots).sort((a, b) => {
+            const { dayIndex: dayA, hourIndex: hourA } = parseSlotKey(a);
+            const { dayIndex: dayB, hourIndex: hourB } = parseSlotKey(b);
+
+            if (dayA !== dayB) return dayA - dayB;
+            return hourA - hourB;
+        });
+
+        const groups = [];
+        let currentGroup = [sortedSlots[0]];
+
+        for (let i = 1; i < sortedSlots.length; i++) {
+            if (isConsecutive(sortedSlots[i - 1], sortedSlots[i])) {
+                currentGroup.push(sortedSlots[i]);
+            } else {
+                groups.push([...currentGroup]);
+                currentGroup = [sortedSlots[i]];
+            }
+        }
+        groups.push(currentGroup);
+
+        return groups;
+    };
+
+    // 슬롯이 선택되었는지 확인
+    const isSlotSelected = (dayIndex, hourIndex) => {
+        return selectedSlots.has(getSlotKey(dayIndex, hourIndex));
+    };
+
     const handleSlotClick = (dayIndex, hourIndex) => {
         const state = getReservationState(dayIndex, hourIndex);
 
-        if (state === RESERVATION_STATES.AVAILABLE) {
-            const days = ['일', '월', '화', '수', '목', '금', '토'];
-            const time = hourIndex === 0 ? "12AM" : hourIndex === 12 ? "12PM" : hourIndex > 12 ? `${hourIndex - 12}PM` : `${hourIndex}AM`;
-            alert(`${days[dayIndex]}요일 ${time} 시간대를 예약하시겠습니까?`);
-        } else if (state === RESERVATION_STATES.PENDING) {
-            alert("이미 예약 중인 시간대입니다.");
-        } else if (state === RESERVATION_STATES.CONFIRMED) {
-            alert("이미 예약 완료된 시간대입니다.");
+        if (state !== RESERVATION_STATES.AVAILABLE) {
+            if (state === RESERVATION_STATES.PENDING) {
+                alert("이미 예약 중인 시간대입니다.");
+            } else if (state === RESERVATION_STATES.CONFIRMED) {
+                alert("이미 예약 완료된 시간대입니다.");
+            }
+            return;
         }
+
+        const slotKey = getSlotKey(dayIndex, hourIndex);
+        const newSelectedSlots = new Set(selectedSlots);
+
+        if (selectedSlots.has(slotKey)) {
+            // 이미 선택된 슬롯을 클릭한 경우
+            const groups = getConsecutiveGroups(selectedSlots);
+            const clickedGroup = groups.find(group => group.includes(slotKey));
+
+            if (clickedGroup) {
+                // 클릭한 슬롯이 그룹의 끝에 있는지 확인
+                const isEndSlot = slotKey === clickedGroup[0] || slotKey === clickedGroup[clickedGroup.length - 1];
+
+                if (isEndSlot) {
+                    // 끝 슬롯이면 해당 슬롯만 제거
+                    newSelectedSlots.delete(slotKey);
+                } else {
+                    // 중간 슬롯이면 전체 그룹 제거
+                    clickedGroup.forEach(key => newSelectedSlots.delete(key));
+                }
+            }
+        } else {
+            // 새로운 슬롯을 선택하는 경우
+            const groups = getConsecutiveGroups(selectedSlots);
+
+            // 기존 선택된 슬롯들과 연속되는지 확인
+            let canAdd = false;
+            let targetGroup = null;
+
+            for (const group of groups) {
+                const firstSlot = group[0];
+                const lastSlot = group[group.length - 1];
+
+                if (isConsecutive(firstSlot, slotKey) || isConsecutive(slotKey, lastSlot)) {
+                    canAdd = true;
+                    targetGroup = group;
+                    break;
+                }
+            }
+
+            if (canAdd && targetGroup) {
+                // 기존 그룹과 연속되는 경우
+                if (selectedSlots.size >= 5) {
+                    alert("최대 5개까지만 선택할 수 있습니다.");
+                    return;
+                }
+                newSelectedSlots.add(slotKey);
+            } else if (selectedSlots.size === 0) {
+                // 첫 번째 선택인 경우
+                newSelectedSlots.add(slotKey);
+            } else {
+                // 연속되지 않는 경우
+                alert("연속된 시간대만 선택할 수 있습니다.");
+                return;
+            }
+        }
+
+        setSelectedSlots(newSelectedSlots);
     };
 
     if (!isLoggedIn) {
@@ -158,11 +275,12 @@ export default function BookingPage() {
                                         {Array.from({ length: 24 }, (_, hourIndex) => {
                                             const state = getReservationState(dayIndex, hourIndex);
                                             const isClickable = isSlotClickable(dayIndex, hourIndex);
+                                            const isSelected = isSlotSelected(dayIndex, hourIndex);
 
                                             return (
                                                 <div
                                                     key={hourIndex}
-                                                    className={`${styles.timeSlot} ${styles[state]} ${!isClickable ? styles.disabled : ''}`}
+                                                    className={`${styles.timeSlot} ${isSelected ? styles.selected : styles[state]} ${!isClickable ? styles.disabled : ''}`}
                                                     onClick={() => handleSlotClick(dayIndex, hourIndex)}
                                                 >
                                                     {state === RESERVATION_STATES.CONFIRMED && <span className={styles.purpose}>[대관 목적]</span>}

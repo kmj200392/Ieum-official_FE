@@ -302,6 +302,20 @@ export default function BookingPage() {
                 </div>
             </main>
 
+            {/* 대관 신청하기 버튼 */}
+            <button
+                className={styles.bookingButton}
+                onClick={() => {
+                    if (selectedSlots.size === 0) {
+                        alert("선택된 시간대가 없습니다.");
+                        return;
+                    }
+                    alert("대관 신청이 완료되었습니다!");
+                }}
+            >
+                대관 신청하기
+            </button>
+
             <Footer />
         </div>
     );

@@ -250,6 +250,34 @@
     line-height: 1.4;
 }
 
+/* 대관 신청하기 버튼 */
+.bookingButton {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 100;
+    width: 241px;
+    height: 80px;
+}
+
+.bookingButton:hover {
+    background: #333333;
+}
+
+.bookingButton:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .loginContainer {

@@ -1,0 +1,31 @@
+/* Header 스타일 */
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .headerContent {
+        padding: 0 1rem;
+    }
+}

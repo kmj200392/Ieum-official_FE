@@ -1,0 +1,117 @@
+/* 사이드바 토글 버튼 */
+.sidebarButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebarButton:hover {
+    background-color: #f5f5f5;
+}
+
+/* 사이드바 오버레이 */
+.sidebarOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebarOverlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 사이드바 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -411px;
+    width: 411px;
+    height: 100%;
+    background: #D9D9D9;
+    z-index: 1001;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #ccc;
+}
+
+.sidebarCloseButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebarCloseButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sidebarContent {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    align-items: flex-end;
+}
+
+.sidebarMenuItem {
+    color: #000;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+    text-align: right;
+}
+
+.sidebarMenuItem:hover {
+    color: #1a5f7a;
+}
+
+/* 모바일 반응형 사이드바 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        right: -100%;
+    }
+
+    .sidebarContent {
+        padding: 1.5rem 1rem;
+        gap: 2rem;
+    }
+
+    .sidebarMenuItem {
+        font-size: 1rem;
+    }
+}

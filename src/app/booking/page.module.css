@@ -1,0 +1,270 @@
+/* 전체 컨테이너 */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.main {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+/* 로그인 페이지 스타일 */
+.loginContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin-top: 4rem;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #000;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: #000;
+    margin-bottom: 3rem;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.inputGroup label {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000;
+}
+
+.inputGroup input {
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    background: #fff;
+    height: 56px;
+}
+
+.loginButton {
+    background: #000;
+    color: #fff;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    height: 80px;
+    margin-top: 1rem;
+}
+
+.loginButton:hover {
+    background: #333;
+}
+
+/* 예약 페이지 스타일 */
+.bookingPageContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.myReservation {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000;
+}
+
+/* 예약 그리드 섹션 */
+.bookingContainer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+.timeColumn {
+    padding-top: 10px;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+.timeLabel {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #000;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.timeLabel:first-child {
+    margin-top: 48px;
+    /* 요일 헤더 높이만큼 상단 여백 추가 */
+}
+
+.weekGrid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 800px;
+}
+
+/* 요일 헤더 */
+.weekDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.weekDay {
+    background: #D9D9D9;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 시간 슬롯 그리드 */
+.timeSlotsGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+/* 각 요일 컬럼 */
+.dayColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.timeSlot {
+    height: 48px;
+    background: #D9D9D9;
+    border: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #000;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.timeSlot:hover {
+    background: #c0c0c0;
+}
+
+.reserved {
+    background: #DA98A4;
+}
+
+.reserved:hover {
+    background: #c88a94;
+}
+
+.purpose {
+    font-size: 0.7rem;
+    color: #000;
+    text-align: center;
+}
+
+/* 정보 섹션 */
+.infoSection {
+    margin-top: 2rem;
+}
+
+.infoText {
+    font-size: 0.9rem;
+    color: #FF0303;
+    line-height: 1.4;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .loginContainer {
+        padding: 2rem 1rem;
+        margin-top: 2rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .bookingContainer {
+        padding: 0 1rem;
+    }
+
+    .headerSection {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .bookingContainer {
+        flex-direction: column;
+    }
+
+    .timeColumn {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .timeLabel {
+        width: 80px;
+        min-width: 80px;
+        border-bottom: none;
+        border-right: 1px solid #e5e5e5;
+    }
+
+    .weekGrid {
+        min-width: auto;
+    }
+
+    .weekDays {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

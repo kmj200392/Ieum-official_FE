@@ -11,6 +11,21 @@ export default function BookingPage() {
         password: ""
     });
 
+    // 예약 상태 타입 정의
+    const RESERVATION_STATES = {
+        AVAILABLE: 'available',      // 이용 가능 (회색)
+        PENDING: 'pending',          // 예약 중 (연빨강)
+        CONFIRMED: 'confirmed'       // 예약 완료 (진한 빨강)
+    };
+
+    // 임시 예약 데이터 (실제로는 API에서 가져올 데이터)
+    const [reservations, setReservations] = useState({
+        // 예시: {dayIndex: {hourIndex: state}}
+        0: { 3: RESERVATION_STATES.PENDING, 4: RESERVATION_STATES.PENDING, 5: RESERVATION_STATES.PENDING, 6: RESERVATION_STATES.PENDING, 7: RESERVATION_STATES.PENDING }, // SUN 3AM-7AM 예약 중
+        1: { 10: RESERVATION_STATES.CONFIRMED, 11: RESERVATION_STATES.CONFIRMED, 12: RESERVATION_STATES.CONFIRMED }, // MON 10AM-12PM 예약 완료
+        2: { 15: RESERVATION_STATES.PENDING, 16: RESERVATION_STATES.PENDING }, // TUE 3PM-4PM 예약 중
+    });
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -29,10 +44,29 @@ export default function BookingPage() {
         }
     };
 
+    // 예약 상태 확인 함수
+    const getReservationState = (dayIndex, hourIndex) => {
+        return reservations[dayIndex]?.[hourIndex] || RESERVATION_STATES.AVAILABLE;
+    };
+
+    // 슬롯 클릭 가능 여부 확인
+    const isSlotClickable = (dayIndex, hourIndex) => {
+        const state = getReservationState(dayIndex, hourIndex);
+        return state === RESERVATION_STATES.AVAILABLE;
+    };
+
     const handleSlotClick = (dayIndex, hourIndex) => {
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-        const time = hourIndex === 0 ? "12AM" : hourIndex === 12 ? "12PM" : hourIndex > 12 ? `${hourIndex - 12}PM` : `${hourIndex}AM`;
-        alert(`${days[dayIndex]}요일 ${time} 시간대를 클릭했습니다.`);
+        const state = getReservationState(dayIndex, hourIndex);
+
+        if (state === RESERVATION_STATES.AVAILABLE) {
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const time = hourIndex === 0 ? "12AM" : hourIndex === 12 ? "12PM" : hourIndex > 12 ? `${hourIndex - 12}PM` : `${hourIndex}AM`;
+            alert(`${days[dayIndex]}요일 ${time} 시간대를 예약하시겠습니까?`);
+        } else if (state === RESERVATION_STATES.PENDING) {
+            alert("이미 예약 중인 시간대입니다.");
+        } else if (state === RESERVATION_STATES.CONFIRMED) {
+            alert("이미 예약 완료된 시간대입니다.");
+        }
     };
 
     if (!isLoggedIn) {
@@ -121,15 +155,20 @@ export default function BookingPage() {
                             <div className={styles.timeSlotsGrid}>
                                 {Array.from({ length: 7 }, (_, dayIndex) => (
                                     <div key={dayIndex} className={styles.dayColumn}>
-                                        {Array.from({ length: 24 }, (_, hourIndex) => (
-                                            <div
-                                                key={hourIndex}
-                                                className={`${styles.timeSlot} ${hourIndex === 3 ? styles.reserved : ""}`}
-                                                onClick={() => handleSlotClick(dayIndex, hourIndex)}
-                                            >
-                                                {hourIndex === 3 && <span className={styles.purpose}>[대관 목적]</span>}
-                                            </div>
-                                        ))}
+                                        {Array.from({ length: 24 }, (_, hourIndex) => {
+                                            const state = getReservationState(dayIndex, hourIndex);
+                                            const isClickable = isSlotClickable(dayIndex, hourIndex);
+
+                                            return (
+                                                <div
+                                                    key={hourIndex}
+                                                    className={`${styles.timeSlot} ${styles[state]} ${!isClickable ? styles.disabled : ''}`}
+                                                    onClick={() => handleSlotClick(dayIndex, hourIndex)}
+                                                >
+                                                    {state === RESERVATION_STATES.CONFIRMED && <span className={styles.purpose}>[대관 목적]</span>}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 ))}
                             </div>

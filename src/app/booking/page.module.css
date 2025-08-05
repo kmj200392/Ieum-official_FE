@@ -177,7 +177,6 @@
 
 .timeSlot {
     height: 48px;
-    background: #D9D9D9;
     border: 1px solid #e5e5e5;
     display: flex;
     align-items: center;
@@ -189,16 +188,38 @@
     transition: background-color 0.2s ease;
 }
 
-.timeSlot:hover {
+/* 이용 가능 상태 (기본) */
+.available {
+    background: #D9D9D9;
+}
+
+.available:hover {
     background: #c0c0c0;
 }
 
-.reserved {
+/* 예약 중 상태 */
+.pending {
     background: #DA98A4;
+    cursor: not-allowed;
 }
 
-.reserved:hover {
+.pending:hover {
     background: #c88a94;
+}
+
+/* 예약 완료 상태 */
+.confirmed {
+    background: #A40732;
+    cursor: not-allowed;
+}
+
+.confirmed:hover {
+    background: #8a0629;
+}
+
+/* 클릭 불가능한 상태 */
+.disabled {
+    cursor: not-allowed;
 }
 
 .purpose {

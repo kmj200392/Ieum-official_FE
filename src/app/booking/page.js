@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import styles from "./page.module.css";
@@ -28,6 +28,12 @@ export default function BookingPage() {
 
     // 선택된 슬롯들 관리
     const [selectedSlots, setSelectedSlots] = useState(new Set());
+
+    // 드래그 상태 관리
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStartSlot, setDragStartSlot] = useState(null);
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -115,6 +121,179 @@ export default function BookingPage() {
         return selectedSlots.has(getSlotKey(dayIndex, hourIndex));
     };
 
+    // 드래그 시작 (클릭도 포함)
+    const handleMouseDown = (dayIndex, hourIndex) => {
+        const state = getReservationState(dayIndex, hourIndex);
+        if (state !== RESERVATION_STATES.AVAILABLE) return;
+
+        const slotKey = getSlotKey(dayIndex, hourIndex);
+
+        // 클릭한 슬롯이 이미 선택되어 있는지 확인
+        if (selectedSlots.has(slotKey)) {
+            // 선택된 슬롯을 클릭한 경우 - 삭제
+            const groups = getConsecutiveGroups(selectedSlots);
+            const clickedGroup = groups.find(group => group.includes(slotKey));
+
+            const newSelectedSlots = new Set(selectedSlots);
+
+            if (clickedGroup) {
+                // 클릭한 슬롯이 그룹의 끝에 있는지 확인
+                const isEndSlot = slotKey === clickedGroup[0] || slotKey === clickedGroup[clickedGroup.length - 1];
+
+                if (isEndSlot) {
+                    // 끝 슬롯이면 해당 슬롯만 제거
+                    newSelectedSlots.delete(slotKey);
+                } else {
+                    // 중간 슬롯이면 전체 그룹 제거
+                    clickedGroup.forEach(key => newSelectedSlots.delete(key));
+                }
+            } else {
+                // 그룹에 속하지 않는 슬롯이면 단순히 제거
+                newSelectedSlots.delete(slotKey);
+            }
+
+            setSelectedSlots(newSelectedSlots);
+            return;
+        }
+
+        // 새로운 슬롯을 선택하는 경우
+        // 기존 선택된 슬롯이 있는지 확인
+        if (selectedSlots.size > 0) {
+            const groups = getConsecutiveGroups(selectedSlots);
+            let canAdd = false;
+
+            for (const group of groups) {
+                const firstSlot = group[0];
+                const lastSlot = group[group.length - 1];
+
+                if (isConsecutive(firstSlot, slotKey) || isConsecutive(slotKey, lastSlot)) {
+                    canAdd = true;
+                    break;
+                }
+            }
+
+            if (!canAdd) {
+                alert("연속된 시간대만 선택할 수 있습니다.");
+                return;
+            }
+
+            if (selectedSlots.size >= 5) {
+                alert("최대 5개까지만 선택할 수 있습니다.");
+                return;
+            }
+        }
+
+        // 새로운 슬롯 즉시 선택
+        const newSelectedSlots = new Set(selectedSlots);
+        newSelectedSlots.add(slotKey);
+        setSelectedSlots(newSelectedSlots);
+
+        // 드래그 시작
+        setIsDragging(true);
+        setDragStartSlot({ dayIndex, hourIndex });
+    };
+
+    // 드래그 중
+    const handleMouseEnter = (dayIndex, hourIndex) => {
+        if (!isDragging || !dragStartSlot) return;
+
+        const state = getReservationState(dayIndex, hourIndex);
+        if (state !== RESERVATION_STATES.AVAILABLE) return;
+
+        const currentSlot = { dayIndex, hourIndex };
+        const slotsToSelect = getSlotsBetween(dragStartSlot, currentSlot);
+
+        // 연속된 슬롯만 선택 (최대 5개)
+        const limitedSlots = slotsToSelect.slice(0, 5);
+
+        // 드래그로 선택할 슬롯들
+        const dragSelectedSlots = new Set();
+
+        for (const slot of limitedSlots) {
+            const slotKey = getSlotKey(slot.dayIndex, slot.hourIndex);
+
+            if (dragSelectedSlots.size === 0) {
+                // 첫 번째 슬롯은 항상 추가 가능
+                dragSelectedSlots.add(slotKey);
+            } else {
+                // 이전 슬롯과 연속되는지 확인
+                const prevSlotKey = Array.from(dragSelectedSlots).pop();
+                if (isConsecutive(prevSlotKey, slotKey)) {
+                    dragSelectedSlots.add(slotKey);
+                } else {
+                    // 연속되지 않으면 더 이상 추가하지 않음
+                    break;
+                }
+            }
+        }
+
+        // 기존 선택된 슬롯들과 드래그로 선택된 슬롯들을 합침
+        const allSelectedSlots = new Set([...selectedSlots, ...dragSelectedSlots]);
+
+        // 최대 5개까지만 유지
+        const finalSelectedSlots = new Set(Array.from(allSelectedSlots).slice(0, 5));
+
+        setSelectedSlots(finalSelectedSlots);
+    };
+
+    // 드래그 종료
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        setDragStartSlot(null);
+    };
+
+
+
+    // 두 슬롯 사이의 모든 슬롯 가져오기 (드래그 시작점 기준으로 정렬)
+    const getSlotsBetween = (startSlot, endSlot) => {
+        const slots = [];
+        const { dayIndex: startDay, hourIndex: startHour } = startSlot;
+        const { dayIndex: endDay, hourIndex: endHour } = endSlot;
+
+        // 드래그 시작점부터 끝점까지의 모든 슬롯을 시간 순서대로 수집
+        let currentDay = startDay;
+        let currentHour = startHour;
+        let targetDay = endDay;
+        let targetHour = endHour;
+
+        // 시작점이 끝점보다 늦은 시간인 경우 순서를 바꿈
+        const startTime = startDay * 24 + startHour;
+        const endTime = endDay * 24 + endHour;
+
+        if (startTime > endTime) {
+            // 순서를 바꿈
+            currentDay = endDay;
+            currentHour = endHour;
+            targetDay = startDay;
+            targetHour = startHour;
+        }
+
+        while (true) {
+            const state = getReservationState(currentDay, currentHour);
+
+            if (state === RESERVATION_STATES.AVAILABLE) {
+                slots.push({ dayIndex: currentDay, hourIndex: currentHour });
+            }
+
+            // 목표 지점에 도달했는지 확인
+            if (currentDay === targetDay && currentHour === targetHour) break;
+
+            // 다음 시간으로 이동
+            currentHour++;
+            if (currentHour >= 24) {
+                currentHour = 0;
+                currentDay = (currentDay + 1) % 7;
+            }
+        }
+
+        // 드래그 시작점이 끝점보다 늦은 경우 배열을 뒤집어서 시작점부터 시작하도록 함
+        if (startTime > endTime) {
+            slots.reverse();
+        }
+
+        return slots;
+    };
+
     const handleSlotClick = (dayIndex, hourIndex) => {
         const state = getReservationState(dayIndex, hourIndex);
 
@@ -130,8 +309,10 @@ export default function BookingPage() {
         const slotKey = getSlotKey(dayIndex, hourIndex);
         const newSelectedSlots = new Set(selectedSlots);
 
+
+
         if (selectedSlots.has(slotKey)) {
-            // 이미 선택된 슬롯을 클릭한 경우
+            // 이미 선택된 슬롯을 클릭한 경우 - 무조건 삭제
             const groups = getConsecutiveGroups(selectedSlots);
             const clickedGroup = groups.find(group => group.includes(slotKey));
 
@@ -146,14 +327,17 @@ export default function BookingPage() {
                     // 중간 슬롯이면 전체 그룹 제거
                     clickedGroup.forEach(key => newSelectedSlots.delete(key));
                 }
+            } else {
+                // 그룹에 속하지 않는 슬롯이면 단순히 제거
+                newSelectedSlots.delete(slotKey);
             }
         } else {
-            // 새로운 슬롯을 선택하는 경우
+            // 새로운 슬롯을 선택하는 경우 - 연속된 슬롯만 선택 가능
+            console.log("새로운 슬롯 선택 시도");
             const groups = getConsecutiveGroups(selectedSlots);
 
             // 기존 선택된 슬롯들과 연속되는지 확인
             let canAdd = false;
-            let targetGroup = null;
 
             for (const group of groups) {
                 const firstSlot = group[0];
@@ -161,20 +345,16 @@ export default function BookingPage() {
 
                 if (isConsecutive(firstSlot, slotKey) || isConsecutive(slotKey, lastSlot)) {
                     canAdd = true;
-                    targetGroup = group;
                     break;
                 }
             }
 
-            if (canAdd && targetGroup) {
-                // 기존 그룹과 연속되는 경우
+            if (canAdd || selectedSlots.size === 0) {
+                // 연속되는 경우이거나 첫 번째 선택인 경우
                 if (selectedSlots.size >= 5) {
                     alert("최대 5개까지만 선택할 수 있습니다.");
                     return;
                 }
-                newSelectedSlots.add(slotKey);
-            } else if (selectedSlots.size === 0) {
-                // 첫 번째 선택인 경우
                 newSelectedSlots.add(slotKey);
             } else {
                 // 연속되지 않는 경우
@@ -237,7 +417,7 @@ export default function BookingPage() {
         <div className={styles.container}>
             <Header />
 
-            <main className={styles.main}>
+            <main className={styles.main} onMouseUp={handleMouseUp}>
                 <div className={styles.bookingPageContainer}>
                     <div className={styles.headerSection}>
                         <h1 className={styles.title}>학생회실 대관</h1>
@@ -281,7 +461,9 @@ export default function BookingPage() {
                                                 <div
                                                     key={hourIndex}
                                                     className={`${styles.timeSlot} ${isSelected ? styles.selected : styles[state]} ${!isClickable ? styles.disabled : ''}`}
-                                                    onClick={() => handleSlotClick(dayIndex, hourIndex)}
+                                                    onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
+                                                    onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
+                                                    onMouseUp={handleMouseUp}
                                                 >
                                                     {state === RESERVATION_STATES.CONFIRMED && <span className={styles.purpose}>[대관 목적]</span>}
                                                 </div>

@@ -11,6 +11,44 @@ export default function BookingPage() {
         password: ""
     });
 
+    // 현재 날짜 기준으로 일주일 날짜 계산
+    const [weekDates, setWeekDates] = useState([]);
+    const [currentWeekStart, setCurrentWeekStart] = useState(new Date());
+
+    // 일주일 날짜 계산 함수
+    const calculateWeekDates = (weekStart) => {
+        const weekDates = [];
+        const sunday = new Date(weekStart);
+        sunday.setDate(weekStart.getDate() - weekStart.getDay());
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(sunday);
+            date.setDate(sunday.getDate() + i);
+            weekDates.push(date);
+        }
+
+        return weekDates;
+    };
+
+    // 이전 주로 이동
+    const goToPreviousWeek = () => {
+        const newWeekStart = new Date(currentWeekStart);
+        newWeekStart.setDate(currentWeekStart.getDate() - 7);
+        setCurrentWeekStart(newWeekStart);
+    };
+
+    // 다음 주로 이동
+    const goToNextWeek = () => {
+        const newWeekStart = new Date(currentWeekStart);
+        newWeekStart.setDate(currentWeekStart.getDate() + 7);
+        setCurrentWeekStart(newWeekStart);
+    };
+
+    useEffect(() => {
+        const weekDates = calculateWeekDates(currentWeekStart);
+        setWeekDates(weekDates);
+    }, [currentWeekStart]);
+
     // 예약 상태 타입 정의
     const RESERVATION_STATES = {
         AVAILABLE: 'available',      // 이용 가능 (회색)
@@ -32,8 +70,6 @@ export default function BookingPage() {
     // 드래그 상태 관리
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartSlot, setDragStartSlot] = useState(null);
-
-
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -242,8 +278,6 @@ export default function BookingPage() {
         setDragStartSlot(null);
     };
 
-
-
     // 두 슬롯 사이의 모든 슬롯 가져오기 (드래그 시작점 기준으로 정렬)
     const getSlotsBetween = (startSlot, endSlot) => {
         const slots = [];
@@ -308,8 +342,6 @@ export default function BookingPage() {
 
         const slotKey = getSlotKey(dayIndex, hourIndex);
         const newSelectedSlots = new Set(selectedSlots);
-
-
 
         if (selectedSlots.has(slotKey)) {
             // 이미 선택된 슬롯을 클릭한 경우 - 무조건 삭제
@@ -446,6 +478,31 @@ export default function BookingPage() {
                                 <div className={styles.weekDay}>THU</div>
                                 <div className={styles.weekDay}>FRI</div>
                                 <div className={styles.weekDay}>SAT</div>
+                            </div>
+
+                            {/* 날짜 헤더 */}
+                            <div className={styles.weekDatesContainer}>
+                                <button
+                                    className={`${styles.weekNavigationButton} ${styles.prevButton}`}
+                                    onClick={goToPreviousWeek}
+                                    aria-label="이전 주"
+                                >
+                                    &lt;
+                                </button>
+                                <div className={styles.weekDates}>
+                                    {weekDates.map((date, index) => (
+                                        <div key={index} className={styles.weekDate}>
+                                            {date.getDate()}
+                                        </div>
+                                    ))}
+                                </div>
+                                <button
+                                    className={`${styles.weekNavigationButton} ${styles.nextButton}`}
+                                    onClick={goToNextWeek}
+                                    aria-label="다음 주"
+                                >
+                                    &gt;
+                                </button>
                             </div>
 
                             {/* 7일 x 24시간 그리드 */}

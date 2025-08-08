@@ -108,7 +108,7 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
-    overflow-x: auto;
+    overflow-x: visible;
 }
 
 .timeColumn {
@@ -130,8 +130,8 @@
 }
 
 .timeLabel:first-child {
-    margin-top: 48px;
-    /* 요일 헤더 높이만큼 상단 여백 추가 */
+    margin-top: 96px;
+    /* 요일 헤더 + 날짜 헤더 높이만큼 상단 여백 추가 */
 }
 
 .weekGrid {
@@ -139,6 +139,7 @@
     display: flex;
     flex-direction: column;
     min-width: 800px;
+    overflow: visible;
 }
 
 /* 요일 헤더 */
@@ -160,6 +161,92 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* 날짜 헤더 컨테이너: 화살표를 절대 배치할 기준 */
+.weekDatesContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+/* 날짜 헤더 */
+.weekDates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.weekDate {
+    background: #D9D9D9;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 화살표 절대 위치 */
+.prevButton,
+.nextButton {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+}
+
+.prevButton {
+    left: 0;
+    transform: translate(-56px, -50%);
+}
+
+.nextButton {
+    right: 0;
+    transform: translate(56px, -50%);
+}
+
+
+
+/* 주간 네비게이션 컨테이너 */
+.weekNavigationContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-left: 1rem;
+}
+
+/* 주간 네비게이션 버튼 */
+.weekNavigationButton {
+    background: #D9D9D9;
+    border: none;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000;
+    height: 48px;
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+}
+
+.weekNavigationButton:hover {
+    background: #c0c0c0;
+}
+
+.weekNavigationButton:active {
+    background: #a0a0a0;
 }
 
 /* 시간 슬롯 그리드 */
@@ -328,4 +415,25 @@
     .weekDays {
         grid-template-columns: repeat(4, 1fr);
     }
+
+    .weekDates {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+
+
+    .weekNavigationButton {
+        width: 100%;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .weekNavigationContainer {
+        flex-direction: row;
+        margin-left: 0;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+
 }

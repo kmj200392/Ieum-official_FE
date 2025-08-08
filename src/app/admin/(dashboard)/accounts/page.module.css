@@ -23,7 +23,7 @@
 
 .row {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
     gap: 0.75rem;
     padding: 0.875rem 1rem;
     border-bottom: 1px solid #eef2f7;
@@ -64,4 +64,60 @@
     border-radius: 6px;
     padding: 0.4rem 0.6rem;
     cursor: pointer;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.modalTitle {
+    margin: 0 0 1rem 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup input {
+    height: 42px;
+    padding: 0 0.75rem;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+}
+
+.formGroup input:focus {
+    border-color: #c0392b;
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    outline: none;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
 }

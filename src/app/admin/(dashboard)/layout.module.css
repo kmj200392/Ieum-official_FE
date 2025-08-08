@@ -15,8 +15,20 @@
 }
 
 .sidebarHeader {
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 48px;
+}
+
+.logoLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logoImage {
+    border-radius: 4px;
 }
 
 .nav {

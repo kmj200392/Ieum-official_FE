@@ -15,6 +15,11 @@ export default function BookingPage() {
     const [weekDates, setWeekDates] = useState([]);
     const [currentWeekStart, setCurrentWeekStart] = useState(new Date());
 
+    // 모달 상태
+    const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+    const [requestEmail, setRequestEmail] = useState("");
+    const [requestPurpose, setRequestPurpose] = useState("");
+
     // 일주일 날짜 계산 함수
     const calculateWeekDates = (weekStart) => {
         const weekDates = [];
@@ -398,6 +403,37 @@ export default function BookingPage() {
         setSelectedSlots(newSelectedSlots);
     };
 
+    // 선택한 시간 범위 포맷팅
+    const formatDateLabel = (d) => {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        return `${yyyy}.${mm}.${dd} ${hh}:00`;
+    };
+
+    const getSelectedRange = () => {
+        if (selectedSlots.size === 0 || weekDates.length !== 7) return { startLabel: '', endLabel: '' };
+        const sorted = Array.from(selectedSlots).sort((a, b) => {
+            const { dayIndex: da, hourIndex: ha } = parseSlotKey(a);
+            const { dayIndex: db, hourIndex: hb } = parseSlotKey(b);
+            if (da !== db) return da - db;
+            return ha - hb;
+        });
+        const first = parseSlotKey(sorted[0]);
+        const last = parseSlotKey(sorted[sorted.length - 1]);
+
+        const start = new Date(weekDates[first.dayIndex]);
+        start.setHours(first.hourIndex, 0, 0, 0);
+        const end = new Date(weekDates[last.dayIndex]);
+        end.setHours(last.hourIndex + 1, 0, 0, 0); // 마지막 슬롯의 끝 시각
+
+        return { startLabel: formatDateLabel(start), endLabel: formatDateLabel(end) };
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailRegex.test(requestEmail);
+
     if (!isLoggedIn) {
         return (
             <div className={styles.container}>
@@ -444,6 +480,8 @@ export default function BookingPage() {
             </div>
         );
     }
+
+    const { startLabel, endLabel } = getSelectedRange();
 
     return (
         <div className={styles.container}>
@@ -543,17 +581,78 @@ export default function BookingPage() {
 
             {/* 대관 신청하기 버튼 */}
             <button
-                className={styles.bookingButton}
+                className={`${styles.bookingButton} ${selectedSlots.size === 0 ? styles.disabled : ''}`}
                 onClick={() => {
-                    if (selectedSlots.size === 0) {
-                        alert("선택된 시간대가 없습니다.");
-                        return;
-                    }
-                    alert("대관 신청이 완료되었습니다!");
+                    if (selectedSlots.size === 0) return;
+                    setIsRequestModalOpen(true);
                 }}
+                disabled={selectedSlots.size === 0}
             >
                 대관 신청하기
             </button>
+
+            {/* 대관 신청 모달 */}
+            {isRequestModalOpen && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modal}>
+                        <h2 className={styles.modalTitle}>대관 신청</h2>
+                        <div className={styles.modalBody}>
+                            <div className={styles.formGroup}>
+                                <label>대관 시작 시간</label>
+                                <input type="text" placeholder={startLabel} disabled />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>대관 종료 시간</label>
+                                <input type="text" placeholder={endLabel} disabled />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>단체명</label>
+                                <input type="text" placeholder="정보대학 학생회" />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>대관 목적</label>
+                                <textarea
+                                    className={styles.textarea}
+                                    placeholder="대관 목적을 입력해 주세요"
+                                    value={requestPurpose}
+                                    onChange={(e) => setRequestPurpose(e.target.value)}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>이메일</label>
+                                <input
+                                    type="email"
+                                    placeholder="example@korea.ac.kr"
+                                    value={requestEmail}
+                                    onChange={(e) => setRequestEmail(e.target.value)}
+                                />
+                                {!isEmailValid && requestEmail.length > 0 && (
+                                    <span className={styles.helperText}>올바른 이메일 형식이 아닙니다.</span>
+                                )}
+                            </div>
+                        </div>
+                        <div className={styles.modalActions}>
+                            <button
+                                className={styles.secondaryButton}
+                                onClick={() => setIsRequestModalOpen(false)}
+                            >
+                                취소
+                            </button>
+                            <button
+                                className={styles.primaryButton}
+                                disabled={!isEmailValid}
+                                onClick={() => {
+                                    if (!isEmailValid) return;
+                                    alert("대관 신청이 완료되었습니다!");
+                                    setIsRequestModalOpen(false);
+                                }}
+                            >
+                                대관 신청하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>

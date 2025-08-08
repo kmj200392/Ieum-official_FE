@@ -59,6 +59,20 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+.adminLink {
+    display: inline-block;
+    background: #e74c3c;
+    color: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.adminLink:hover {
+    background: #c0392b;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .footerContent {

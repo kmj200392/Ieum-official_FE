@@ -1,0 +1,225 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.title {
+    margin: 0;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.searchInput {
+    width: 260px;
+    height: 38px;
+    padding: 0 0.75rem;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+}
+
+.select,
+.dateInput {
+    height: 38px;
+    padding: 0 0.5rem;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.tilde {
+    color: #7f8c8d;
+}
+
+.table {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1.2fr 2fr 1.2fr 2fr 1fr 1.4fr 1.8fr;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.header {
+    background: #f7f9fc;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.sub {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.empty {
+    padding: 2rem;
+    text-align: center;
+    color: #95a5a6;
+}
+
+.primaryButton {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+}
+
+.secondaryButton {
+    background: #ecf0f1;
+    color: #2c3e50;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+}
+
+.warningButton {
+    background: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+}
+
+.dangerButton {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+}
+
+.badgeApproved {
+    background: #eaf7ee;
+    color: #1e7e34;
+}
+
+.badgeRejected {
+    background: #fdecea;
+    color: #a1251b;
+}
+
+.badgePending {
+    background: #fff7e6;
+    color: #b45f06;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 640px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.modalTitle {
+    margin: 0 0 1rem 0;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0.5rem 1rem;
+}
+
+.detailLabel {
+    color: #7f8c8d;
+}
+
+.detailValue {
+    color: #2c3e50;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.textarea {
+    min-height: 120px;
+    padding: 0.75rem;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+}
+
+.textarea:focus {
+    border-color: #c0392b;
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    outline: none;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+    .row {
+        grid-template-columns: 1.6fr 2fr 1fr 2fr 1fr 1.4fr 2.2fr;
+    }
+
+    .searchInput {
+        width: 180px;
+    }
+}

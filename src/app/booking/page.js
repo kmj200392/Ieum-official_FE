@@ -438,44 +438,41 @@ export default function BookingPage() {
         return (
             <div className={styles.container}>
                 <Header />
-
                 <main className={styles.main}>
-                    <div className={styles.loginContainer}>
-                        <h1 className={styles.title}>학생회실 대관</h1>
-                        <p className={styles.subtitle}>로그인이 필요한 페이지입니다.</p>
-
-                        <form className={styles.loginForm} onSubmit={handleLogin}>
-                            <div className={styles.inputGroup}>
-                                <label htmlFor="username">아이디</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className={styles.inputGroup}>
-                                <label htmlFor="password">비밀번호</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-
-                            <button type="submit" className={styles.loginButton}>
-                                로그인
-                            </button>
-                        </form>
-                    </div>
+                    <h1 className={styles.title}>학생회실 대관</h1>
+                    <p className={styles.subtitle}>
+                        학생회실 대관은 정보대학 학생회, 산하기구 학생회,
+                        정보대학 동아리연합회 소속 동아리,
+                        정보대학 산하기구 소속 소모임만 가능합니다.
+                    </p>
+                    <form className={styles.glassContainer} onSubmit={handleLogin}>
+                        <div className={styles.inputField}>
+                            <label htmlFor="username">아이디</label>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="username"
+                                value={formData.username}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className={styles.inputField}>
+                            <label htmlFor="password">비밀번호</label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="*****"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className={styles.loginButton}>로그인</button>
+                    </form>
                 </main>
-
                 <Footer />
             </div>
         );

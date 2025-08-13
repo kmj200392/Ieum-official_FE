@@ -9,6 +9,14 @@
   --border-color: #e5e5e5;
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-medium: rgba(0, 0, 0, 0.15);
+  --bg-grad-stop0: rgba(255, 255, 255, 0);
+  --bg-grad-stop1: #AE4834;
+  --bg-grad-stop2: #6F3037;
+  --bg-noise-opacity: 0.07;
+  --bg-element-scale: 0.63;
+  /* 1 = 원본 크기, 값이 작을수록 더 넓게 보임 */
+  --bg-element-offset-x: 0px;
+  --bg-element-offset-y: -300px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,8 +46,42 @@ body {
 
 body {
   color: var(--text-primary);
-  background: var(--background);
+  background-color: var(--background);
   line-height: 1.6;
+}
+
+/* Fixed Figma background (exact size and offset) */
+body::before {
+  content: "";
+  position: fixed;
+  top: var(--bg-element-offset-y, 0);
+  left: 50%;
+  transform: translateX(-50%) translateX(var(--bg-element-offset-x, 0));
+  width: calc(1513.21px / var(--bg-element-scale));
+  height: calc(982px / var(--bg-element-scale));
+  pointer-events: none;
+  z-index: -2;
+  background-image: url('/bg-element.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  top: var(--bg-element-offset-y, 0);
+  left: 50%;
+  transform: translateX(-50%) translateX(var(--bg-element-offset-x, 0));
+  width: calc(1513.21px / var(--bg-element-scale));
+  height: calc(982px / var(--bg-element-scale));
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--bg-noise-opacity, 0.08);
+  background-image: url('/background-noise.png');
+  background-repeat: repeat;
+  background-size: calc(2048px * 0.8488063812255859) calc(2048px * 0.8488063812255859);
+  background-position: 0 0;
 }
 
 a {
@@ -90,5 +132,53 @@ img {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+@media (min-aspect-ratio: 21/9) {
+  :root {
+    --bg-element-scale: 0.52;
+    --bg-element-offset-y: -340px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) and (max-aspect-ratio: 21/9) {
+  :root {
+    --bg-element-scale: 0.63;
+    --bg-element-offset-y: -300px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 16/10) and (max-aspect-ratio: 16/9) {
+  :root {
+    --bg-element-scale: 0.60;
+    --bg-element-offset-y: -260px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/10) {
+  :root {
+    --bg-element-scale: 0.68;
+    --bg-element-offset-y: -220px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (max-aspect-ratio: 3/2) and (min-aspect-ratio: 4/3) {
+  :root {
+    --bg-element-scale: 0.73;
+    --bg-element-offset-y: -200px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (max-aspect-ratio: 4/3) {
+  :root {
+    --bg-element-scale: 0.80;
+    --bg-element-offset-y: -170px;
+    --bg-element-offset-x: 0px;
   }
 }

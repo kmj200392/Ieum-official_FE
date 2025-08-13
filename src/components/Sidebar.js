@@ -15,25 +15,28 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* 사이드바 토글 버튼 */}
-            <button className={styles.sidebarButton} onClick={toggleSidebar}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            {/* 사이드바 토글 버튼 (Figma wireframe icon) */}
+            <button className={styles.sidebarButton} onClick={toggleSidebar} aria-label="메뉴 열기" type="button">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="8" x2="28" y2="8" stroke="#1E1E1E" strokeWidth="3" />
+                    <line x1="4" y1="16" x2="28" y2="16" stroke="#1E1E1E" strokeWidth="3" />
+                    <line x1="4" y1="24" x2="28" y2="24" stroke="#1E1E1E" strokeWidth="3" />
                 </svg>
             </button>
 
             {/* 사이드바 오버레이 */}
             <div
-                className={`${styles.sidebarOverlay} ${isSidebarOpen ? styles.active : ''}`}
+                className={`${styles.sidebarOverlay} ${isSidebarOpen ? styles.active : ""}`}
                 onClick={closeSidebar}
+                aria-hidden={!isSidebarOpen}
             />
 
             {/* 사이드바 */}
-            <div className={`${styles.sidebar} ${isSidebarOpen ? styles.active : ''}`}>
+            <div className={`${styles.sidebar} ${isSidebarOpen ? styles.active : ""}`} role="dialog" aria-modal="true">
                 <div className={styles.sidebarHeader}>
-                    <div></div>
-                    <button className={styles.sidebarCloseButton} onClick={closeSidebar}>
-                        X
+                    <div />
+                    <button className={styles.sidebarCloseButton} onClick={closeSidebar} aria-label="메뉴 닫기" type="button">
+                        ×
                     </button>
                 </div>
                 <div className={styles.sidebarContent}>

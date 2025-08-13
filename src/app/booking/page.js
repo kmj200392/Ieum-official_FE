@@ -441,8 +441,8 @@ export default function BookingPage() {
                 <main className={styles.main}>
                     <h1 className={styles.title}>학생회실 대관</h1>
                     <p className={styles.subtitle}>
-                        학생회실 대관은 정보대학 학생회, 산하기구 학생회,
-                        정보대학 동아리연합회 소속 동아리,
+                        학생회실 대관은 정보대학 학생회, 산하기구 학생회,<br />
+                        정보대학 동아리연합회 소속 동아리,<br />
                         정보대학 산하기구 소속 소모임만 가능합니다.
                     </p>
                     <form className={styles.glassContainer} onSubmit={handleLogin}>

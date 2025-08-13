@@ -182,3 +182,13 @@ img {
     --bg-element-offset-x: 0px;
   }
 }
+
+.appRoot {
+  position: relative;
+  isolation: isolate;
+}
+
+body.sidebar-open .appRoot {
+  filter: blur(10px);
+  transition: filter 0.2s ease;
+}

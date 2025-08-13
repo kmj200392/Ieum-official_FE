@@ -3,16 +3,11 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    padding: 0;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.sidebarButton:hover {
-    background-color: #f5f5f5;
 }
 
 /* 사이드바 오버레이 */
@@ -22,81 +17,94 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0);
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .sidebarOverlay.active {
     opacity: 1;
     visibility: visible;
+    background: rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
 }
 
-/* 사이드바 */
+/* 사이드바 컨테이너 */
 .sidebar {
     position: fixed;
     top: 0;
-    right: -411px;
-    width: 411px;
+    right: -366px;
+    width: 366px;
     height: 100%;
-    background: #D9D9D9;
     z-index: 1001;
-    transition: right 0.3s ease;
+    transition: right 0.25s ease;
     display: flex;
     flex-direction: column;
+    /* transparent container; panel draws visuals */
+    background: transparent;
 }
 
 .sidebar.active {
     right: 0;
 }
 
-.sidebarHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #ccc;
+/* 유리 패널 (glass) */
+.panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 366px;
+    height: 100%;
+    border-radius: 30px 0 0 30px;
+    /* fill gradient: white 0.8 -> white 0.2 */
+    background: linear-gradient(100deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%);
+    /* no visible border in design */
+    border: none;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
+/* 닫기 버튼 */
 .sidebarCloseButton {
+    position: absolute;
+    top: 37px;
+    left: 306px;
+    width: 32px;
+    height: 32px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
-.sidebarCloseButton:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
+/* 콘텐츠 영역 */
 .sidebarContent {
-    flex: 1;
-    padding: 2rem 1.5rem;
+    position: absolute;
+    top: 175px;
+    right: 45px;
+    /* to get 189px text box width visually */
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 45px;
     align-items: flex-end;
 }
 
 .sidebarMenuItem {
     color: #000;
     text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 500;
-    padding: 0.5rem 0;
-    transition: color 0.2s ease;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 1.1933;
     text-align: right;
-}
-
-.sidebarMenuItem:hover {
-    color: #1a5f7a;
 }
 
 /* 모바일 반응형 사이드바 */
@@ -106,12 +114,23 @@
         right: -100%;
     }
 
+    .panel {
+        width: 100%;
+        border-radius: 30px 0 0 0;
+    }
+
+    .sidebarCloseButton {
+        left: auto;
+        right: 20px;
+    }
+
     .sidebarContent {
-        padding: 1.5rem 1rem;
-        gap: 2rem;
+        top: 120px;
+        right: 24px;
+        gap: 28px;
     }
 
     .sidebarMenuItem {
-        font-size: 1rem;
+        font-size: 22px;
     }
 }

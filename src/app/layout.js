@@ -61,7 +61,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={inter.variable}>
-        {children}
+        <div className="appRoot">
+          {children}
+        </div>
+        <div id="portal-root"></div>
       </body>
     </html>
   );

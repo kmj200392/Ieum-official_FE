@@ -1,18 +1,17 @@
-/* Header 스타일 */
+/* Header (wireframe minimal) */
 .header {
-    background: #ffffff;
-    border-bottom: 1px solid #e5e5e5;
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 1512px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 50px 75px 20px;
+    background: transparent;
 }
 
 .headerContent {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,9 +27,9 @@
     text-decoration: none;
 }
 
-/* 반응형 디자인 */
 @media (max-width: 768px) {
-    .headerContent {
-        padding: 0 1rem;
+    .header {
+        width: 100vw;
+        padding: 24px 20px 12px;
     }
 }

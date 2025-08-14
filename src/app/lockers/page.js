@@ -63,7 +63,7 @@ export default function LockersPage() {
                             required
                         />
                     </div>
-                    <button type="submit" className={styles.loginButton}>신청하러가기</button>
+                    <button type="submit" className={styles.loginButton}>신청하러 가기</button>
                 </form>
             </main>
             <Footer />

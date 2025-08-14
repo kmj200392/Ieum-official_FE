@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/OnboardingFooter";
+import InputField from "../../components/InputField";
 import styles from "./page.module.css";
 
 export default function BookingPage() {
@@ -447,27 +448,28 @@ export default function BookingPage() {
                     </p>
                     <form className={styles.glassContainer} onSubmit={handleLogin}>
                         <div className={styles.inputField}>
-                            <label htmlFor="username">아이디</label>
-                            <input
+                            <InputField
                                 id="username"
                                 name="username"
-                                type="text"
+                                label="아이디"
                                 placeholder="username"
                                 value={formData.username}
                                 onChange={handleInputChange}
                                 required
+                                inputClassName=""
                             />
                         </div>
                         <div className={styles.inputField}>
-                            <label htmlFor="password">비밀번호</label>
-                            <input
+                            <InputField
                                 id="password"
                                 name="password"
                                 type="password"
+                                label="비밀번호"
                                 placeholder="*****"
                                 value={formData.password}
                                 onChange={handleInputChange}
                                 required
+                                inputClassName=""
                             />
                         </div>
                         <button type="submit" className={styles.loginButton}>로그인</button>

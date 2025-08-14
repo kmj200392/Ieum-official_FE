@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'KIMM_Light';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/KIMM_Light.woff') format('woff');
+  src: local('KIMM_Light'), url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/KIMM_Light.woff') format('woff');
   font-weight: 300;
   font-style: normal;
   font-display: swap;

@@ -75,13 +75,13 @@
     width: 241px;
     /* fix exact size to avoid browser min-width quirks */
     padding: 12px 16px;
-    border: none;
+    border: 1px solid #e5e5e5;
     border-radius: 8px;
     font-family: 'Pretendard', sans-serif;
     font-weight: 300;
     font-size: 16px;
     line-height: 1.4;
-    color: #B3B3B3;
+    color: #1E1E1E;
     background: #FFFFFF;
 }
 

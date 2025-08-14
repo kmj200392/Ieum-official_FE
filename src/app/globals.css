@@ -56,6 +56,7 @@ body {
   color: var(--text-primary);
   background-color: var(--background);
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 /* Fixed Figma background (exact size and offset) */
@@ -175,10 +176,34 @@ img {
   }
 }
 
-@media (max-aspect-ratio: 3/2) and (min-aspect-ratio: 4/3) {
+@media (min-aspect-ratio: 16/10) and (max-aspect-ratio: 16/9) {
   :root {
-    --bg-element-scale: 0.73;
-    --bg-element-offset-y: -200px;
+    --bg-element-scale: 0.60;
+    --bg-element-offset-y: -260px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/10) {
+  :root {
+    --bg-element-scale: 0.68;
+    --bg-element-offset-y: -220px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/10) {
+  :root {
+    --bg-element-scale: 0.68;
+    --bg-element-offset-y: -220px;
+    --bg-element-offset-x: 0px;
+  }
+}
+
+@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/10) {
+  :root {
+    --bg-element-scale: 0.68;
+    --bg-element-offset-y: -220px;
     --bg-element-offset-x: 0px;
   }
 }
@@ -194,6 +219,7 @@ img {
 .appRoot {
   position: relative;
   isolation: isolate;
+  min-height: 100vh;
 }
 
 body.sidebar-open .appRoot {

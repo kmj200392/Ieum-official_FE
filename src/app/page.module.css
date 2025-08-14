@@ -5,6 +5,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  padding-bottom: 200px;
 }
 
 /* Header is intrinsic height based on its padding; Footer should sit at y=782 with height 200 */

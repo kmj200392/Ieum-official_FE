@@ -5,6 +5,7 @@ import Footer from "../../components/OnboardingFooter";
 import InputField from "../../components/InputField";
 import styles from "./page.module.css";
 import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens } from "../../utils/auth";
+import BookingBoard from "../../components/BookingBoard";
 
 export default function BookingPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,6 +47,7 @@ export default function BookingPage() {
     // 현재 날짜 기준으로 일주일 날짜 계산
     const [weekDates, setWeekDates] = useState([]);
     const [currentWeekStart, setCurrentWeekStart] = useState(new Date());
+    const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
     // 모달 상태
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -580,79 +582,19 @@ export default function BookingPage() {
                         <h1 className={styles.title}>학생회실 대관</h1>
                     </div>
 
-                    <div className={styles.bookingContainer}>
-                        <div className={styles.timeColumn}>
-                            {/* 시간 표시 */}
-                            {Array.from({ length: 24 }, (_, i) => (
-                                <div key={i} className={styles.timeLabel}>
-                                    {i === 0 ? "12AM" : i === 12 ? "12PM" : i > 12 ? `${i - 12}PM` : `${i}AM`}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className={styles.weekGrid}>
-                            {/* 요일 헤더 */}
-                            <div className={styles.weekDays}>
-                                <div className={styles.weekDay}>SUN</div>
-                                <div className={styles.weekDay}>MON</div>
-                                <div className={styles.weekDay}>TUE</div>
-                                <div className={styles.weekDay}>WED</div>
-                                <div className={styles.weekDay}>THU</div>
-                                <div className={styles.weekDay}>FRI</div>
-                                <div className={styles.weekDay}>SAT</div>
-                            </div>
-
-                            {/* 날짜 헤더 */}
-                            <div className={styles.weekDatesContainer}>
-                                <button
-                                    className={`${styles.weekNavigationButton} ${styles.prevButton}`}
-                                    onClick={goToPreviousWeek}
-                                    aria-label="이전 주"
-                                >
-                                    &lt;
-                                </button>
-                                <div className={styles.weekDates}>
-                                    {weekDates.map((date, index) => (
-                                        <div key={index} className={styles.weekDate}>
-                                            {date.getDate()}
-                                        </div>
-                                    ))}
-                                </div>
-                                <button
-                                    className={`${styles.weekNavigationButton} ${styles.nextButton}`}
-                                    onClick={goToNextWeek}
-                                    aria-label="다음 주"
-                                >
-                                    &gt;
-                                </button>
-                            </div>
-
-                            {/* 7일 x 24시간 그리드 */}
-                            <div className={styles.timeSlotsGrid}>
-                                {Array.from({ length: 7 }, (_, dayIndex) => (
-                                    <div key={dayIndex} className={styles.dayColumn}>
-                                        {Array.from({ length: 24 }, (_, hourIndex) => {
-                                            const state = getReservationState(dayIndex, hourIndex);
-                                            const isClickable = isSlotClickable(dayIndex, hourIndex);
-                                            const isSelected = isSlotSelected(dayIndex, hourIndex);
-
-                                            return (
-                                                <div
-                                                    key={hourIndex}
-                                                    className={`${styles.timeSlot} ${isSelected ? styles.selected : styles[state]} ${!isClickable ? styles.disabled : ''}`}
-                                                    onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
-                                                    onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
-                                                    onMouseUp={handleMouseUp}
-                                                >
-                                                    {state === RESERVATION_STATES.CONFIRMED && <span className={styles.purpose}>[대관 목적]</span>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <BookingBoard
+                        weekDates={weekDates}
+                        selectedDayIndex={selectedDayIndex}
+                        onPrevWeek={goToPreviousWeek}
+                        onNextWeek={goToNextWeek}
+                        onSelectDay={setSelectedDayIndex}
+                        reservations={reservations}
+                        selectedSlots={selectedSlots}
+                        onSlotMouseDown={handleMouseDown}
+                        onSlotMouseEnter={handleMouseEnter}
+                        onSlotMouseUp={handleMouseUp}
+                        RESERVATION_STATES={RESERVATION_STATES}
+                    />
 
                     <div className={styles.infoSection}>
                         <p className={styles.infoText}>

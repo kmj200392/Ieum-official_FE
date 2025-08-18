@@ -1,11 +1,27 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./layout.module.css";
+import { getRefreshToken, clearTokens } from "@/utils/auth";
 
 export default function AdminDashboardLayout({ children }) {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            const refresh = getRefreshToken();
+            await fetch("/api/admin/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh }),
+            });
+        } catch { }
+        // Clear client tokens too
+        clearTokens();
+        router.replace("/");
+    };
 
     return (
         <div className={styles.wrapper}>
@@ -28,9 +44,7 @@ export default function AdminDashboardLayout({ children }) {
                     <a href="/admin/contents" className={`${styles.navItem} ${pathname === "/admin/contents" ? styles.active : ""}`}>컨텐츠 관리</a>
                     <a href="/admin/equipments" className={`${styles.navItem} ${pathname === "/admin/equipments" ? styles.active : ""}`}>물품대여 관리</a>
                     <a href="/admin/certificates" className={`${styles.navItem} ${pathname === "/admin/certificates" ? styles.active : ""}`}>활동증명서 관리</a>
-                    <form action="/api/admin/logout" method="post">
-                        <button className={styles.logoutButton} type="submit">로그아웃</button>
-                    </form>
+                    <button className={styles.logoutButton} type="button" onClick={handleLogout}>로그아웃</button>
                 </nav>
             </aside>
             <main className={styles.content}>{children}</main>

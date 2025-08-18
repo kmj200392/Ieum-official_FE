@@ -572,15 +572,12 @@ export default function BookingPage() {
 
     return (
         <div className={styles.container}>
-            <Header />
+            <Header variant="simple" showMyReservation />
 
             <main className={styles.main} onMouseUp={handleMouseUp}>
                 <div className={styles.bookingPageContainer}>
                     <div className={styles.headerSection}>
                         <h1 className={styles.title}>학생회실 대관</h1>
-                        <div className={styles.myReservation}>
-                            <span>MY 예약 현황</span>
-                        </div>
                     </div>
 
                     <div className={styles.bookingContainer}>

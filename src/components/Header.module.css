@@ -27,6 +27,20 @@
     text-decoration: none;
 }
 
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.myReservation {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.2;
+    color: #000;
+}
+
 @media (max-width: 768px) {
     .header {
         width: 100vw;

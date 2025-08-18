@@ -100,10 +100,8 @@ export default function BookingPage() {
                     "accept": "application/json",
                 },
                 body: JSON.stringify({
-                    data: {
-                        username: formData.username,
-                        password: formData.password,
-                    }
+                    username: formData.username,
+                    password: formData.password,
                 }),
             });
 

@@ -4,15 +4,44 @@ import Header from "../../components/Header";
 import Footer from "../../components/OnboardingFooter";
 import InputField from "../../components/InputField";
 import styles from "./page.module.css";
+import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens } from "../../utils/auth";
 
 export default function BookingPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [authReady, setAuthReady] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
         password: ""
     });
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
+
+    // 토큰 존재 시 자동 로그인 처리
+    useEffect(() => {
+        const bootstrap = async () => {
+            try {
+                const access = getAccessToken();
+                const refresh = getRefreshToken();
+                if (access) {
+                    scheduleAccessTokenRefresh(access, refresh);
+                    setIsLoggedIn(true);
+                    return;
+                }
+                if (refresh) {
+                    const newAccess = await refreshAccessToken();
+                    scheduleAccessTokenRefresh(newAccess, refresh);
+                    setIsLoggedIn(true);
+                    return;
+                }
+            } catch {
+                clearTokens();
+            } finally {
+                setAuthReady(true);
+            }
+        };
+        bootstrap();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // 현재 날짜 기준으로 일주일 날짜 계산
     const [weekDates, setWeekDates] = useState([]);
@@ -105,26 +134,35 @@ export default function BookingPage() {
                 }),
             });
 
+            const status = res.status;
+
             if (!res.ok) {
                 let message = "로그인에 실패했습니다.";
                 try {
                     const errData = await res.json();
-                    message = errData.message || errData.detail || message;
+                    // API 문서: 400/401 => { detail: string }
+                    if (errData && typeof errData.detail === "string") {
+                        message = errData.detail;
+                    }
                 } catch { }
                 setLoginError(message);
                 return;
             }
 
+            // 성공: { refresh, access }
             let data = null;
             try { data = await res.json(); } catch { }
-            if (data) {
-                const accessToken = data.access || data.token || data.access_token;
-                const refreshToken = data.refresh || data.refresh_token;
-                if (accessToken) localStorage.setItem("accessToken", accessToken);
-                if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
-            }
 
-            setIsLoggedIn(true);
+            const access = data?.access;
+            const refresh = data?.refresh;
+
+            if (typeof access === "string") {
+                setTokens(access, refresh);
+                scheduleAccessTokenRefresh(access, refresh);
+                setIsLoggedIn(true);
+            } else {
+                setLoginError("로그인 응답 형식이 올바르지 않습니다.");
+            }
         } catch (err) {
             setLoginError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
         } finally {
@@ -472,6 +510,12 @@ export default function BookingPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailRegex.test(requestEmail);
 
+    // 1) 아직 토큰 확인 중이면 아무 것도 렌더링하지 않음 (깜빡임 방지)
+    if (!authReady) {
+        return null;
+    }
+
+    // 2) 토큰 확인 완료 후, 비로그인 상태면 로그인 화면 렌더
     if (!isLoggedIn) {
         return (
             <div className={styles.container}>
@@ -523,6 +567,7 @@ export default function BookingPage() {
         );
     }
 
+    // 3) 로그인 상태면 원래 예약 화면 렌더
     const { startLabel, endLabel } = getSelectedRange();
 
     return (

@@ -13,6 +13,9 @@ export default function AccountsPage() {
     // modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form, setForm] = useState({ orgName: "", username: "", password: "" });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -45,6 +48,15 @@ export default function AccountsPage() {
 
     const openAddModal = () => {
         setForm({ orgName: "", username: "", password: "" });
+        setIsEditing(false);
+        setEditingId(null);
+        setIsModalOpen(true);
+    };
+
+    const openEditModal = (user) => {
+        setIsEditing(true);
+        setEditingId(user.id);
+        setForm({ orgName: user.first_name || "", username: user.username || "", password: "" });
         setIsModalOpen(true);
     };
 
@@ -55,12 +67,55 @@ export default function AccountsPage() {
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleAdd = () => {
+    const handleSave = async () => {
         if (!form.orgName || !form.username || !form.password) return;
-        // 프론트에서만 우선 테이블에 반영 (실제 생성 API 연동 전)
-        const newRow = { id: Date.now(), first_name: form.orgName, username: form.username };
-        setAccounts((prev) => [newRow, ...prev]);
-        setIsModalOpen(false);
+        setError("");
+        if (isEditing && editingId != null) {
+            // 프론트에서만 목록 갱신 (수정 API 미정)
+            setAccounts((prev) => prev.map((u) => (
+                u.id === editingId ? { ...u, first_name: form.orgName, username: form.username } : u
+            )));
+            setIsModalOpen(false);
+            return;
+        }
+        // 추가: 실제 등록 API 연동
+        setSaving(true);
+        try {
+            const res = await authorizedFetch(`${API_BASE}/account/register/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    accept: "application/json",
+                },
+                body: JSON.stringify({
+                    username: form.username, // id
+                    name: form.orgName,      // 단체명
+                    password: form.password,
+                    role: "STAFF",
+                    groups: [],
+                }),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data?.detail || `요청 실패 (${res.status})`);
+            }
+            const data = await res.json().catch(() => ({}));
+            const created = {
+                id: data?.id ?? Date.now(),
+                first_name: data?.first_name ?? form.orgName,
+                username: data?.username ?? form.username,
+            };
+            setAccounts((prev) => [created, ...prev]);
+            setIsModalOpen(false);
+        } catch (e) {
+            setError(e?.message || "계정 생성에 실패했습니다.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleDelete = (userId) => {
+        setAccounts((prev) => prev.filter((u) => u.id !== userId));
     };
 
     return (
@@ -74,10 +129,12 @@ export default function AccountsPage() {
                 <div className={`${styles.row} ${styles.header}`}>
                     <div>단체명</div>
                     <div>아이디</div>
+                    <div>액션</div>
                 </div>
                 {loading && (
                     <div className={styles.row}>
                         <div>로딩 중...</div>
+                        <div></div>
                         <div></div>
                     </div>
                 )}
@@ -85,12 +142,17 @@ export default function AccountsPage() {
                     <div className={styles.row}>
                         <div style={{ color: "#e74c3c" }}>{error}</div>
                         <div></div>
+                        <div></div>
                     </div>
                 )}
                 {!loading && !error && accounts.map((user) => (
                     <div key={user.id} className={styles.row}>
                         <div>{user.first_name || ""}</div>
                         <div>{user.username || ""}</div>
+                        <div className={styles.actions}>
+                            <button className={styles.secondaryButton} onClick={() => openEditModal(user)}>수정</button>
+                            <button className={styles.dangerButton} onClick={() => handleDelete(user.id)}>삭제</button>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -98,7 +160,7 @@ export default function AccountsPage() {
             {isModalOpen && (
                 <div className={styles.modalOverlay} role="dialog" aria-modal="true">
                     <div className={styles.modal}>
-                        <h3 className={styles.modalTitle}>계정 추가</h3>
+                        <h3 className={styles.modalTitle}>{isEditing ? "계정 수정" : "계정 추가"}</h3>
                         <div className={styles.form}>
                             <InputField
                                 id="orgName"
@@ -125,13 +187,13 @@ export default function AccountsPage() {
                                 label="비밀번호"
                                 value={form.password}
                                 onChange={handleChange}
-                                placeholder="비밀번호를 입력하세요"
+                                placeholder={isEditing ? "새 비밀번호를 입력하세요" : "비밀번호를 입력하세요"}
                                 containerClassName={styles.inputField}
                             />
                         </div>
                         <div className={styles.modalActions}>
                             <button className={styles.secondaryButton} onClick={closeModal}>취소</button>
-                            <button className={styles.primaryButton} onClick={handleAdd} disabled={!form.orgName || !form.username || !form.password}>추가</button>
+                            <button className={styles.primaryButton} onClick={handleSave} disabled={!form.orgName || !form.username || !form.password || saving}>{isEditing ? (saving ? "수정 중..." : "수정") : (saving ? "추가 중..." : "추가")}</button>
                         </div>
                     </div>
                 </div>

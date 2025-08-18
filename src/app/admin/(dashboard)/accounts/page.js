@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { API_BASE, authorizedFetch } from "@/utils/auth";
+import InputField from "@/components/InputField";
 
 export default function AccountsPage() {
     const [accounts, setAccounts] = useState([]);
@@ -99,37 +100,34 @@ export default function AccountsPage() {
                     <div className={styles.modal}>
                         <h3 className={styles.modalTitle}>계정 추가</h3>
                         <div className={styles.form}>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="orgName">단체명</label>
-                                <input
-                                    id="orgName"
-                                    name="orgName"
-                                    value={form.orgName}
-                                    onChange={handleChange}
-                                    placeholder="예: 정보대학 학생회"
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="username">아이디</label>
-                                <input
-                                    id="username"
-                                    name="username"
-                                    value={form.username}
-                                    onChange={handleChange}
-                                    placeholder="예: ieum_admin"
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="password">비밀번호</label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    placeholder="비밀번호를 입력하세요"
-                                />
-                            </div>
+                            <InputField
+                                id="orgName"
+                                name="orgName"
+                                label="단체명"
+                                value={form.orgName}
+                                onChange={handleChange}
+                                placeholder="예: 정보대학 학생회"
+                                containerClassName={styles.inputField}
+                            />
+                            <InputField
+                                id="username"
+                                name="username"
+                                label="아이디"
+                                value={form.username}
+                                onChange={handleChange}
+                                placeholder="예: ieum_admin"
+                                containerClassName={styles.inputField}
+                            />
+                            <InputField
+                                id="password"
+                                name="password"
+                                type="password"
+                                label="비밀번호"
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder="비밀번호를 입력하세요"
+                                containerClassName={styles.inputField}
+                            />
                         </div>
                         <div className={styles.modalActions}>
                             <button className={styles.secondaryButton} onClick={closeModal}>취소</button>

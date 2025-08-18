@@ -9,6 +9,10 @@ export default function AccountsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form, setForm] = useState({ orgName: "", username: "", password: "" });
+
     useEffect(() => {
         let isMounted = true;
         async function load() {
@@ -38,10 +42,31 @@ export default function AccountsPage() {
         };
     }, []);
 
+    const openAddModal = () => {
+        setForm({ orgName: "", username: "", password: "" });
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => setIsModalOpen(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleAdd = () => {
+        if (!form.orgName || !form.username || !form.password) return;
+        // 프론트에서만 우선 테이블에 반영 (실제 생성 API 연동 전)
+        const newRow = { id: Date.now(), first_name: form.orgName, username: form.username };
+        setAccounts((prev) => [newRow, ...prev]);
+        setIsModalOpen(false);
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.headerRow}>
                 <h2 className={styles.title}>계정 관리</h2>
+                <button className={styles.primaryButton} onClick={openAddModal}>+ 계정 추가</button>
             </div>
 
             <div className={styles.table}>
@@ -68,6 +93,51 @@ export default function AccountsPage() {
                     </div>
                 ))}
             </div>
+
+            {isModalOpen && (
+                <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+                    <div className={styles.modal}>
+                        <h3 className={styles.modalTitle}>계정 추가</h3>
+                        <div className={styles.form}>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="orgName">단체명</label>
+                                <input
+                                    id="orgName"
+                                    name="orgName"
+                                    value={form.orgName}
+                                    onChange={handleChange}
+                                    placeholder="예: 정보대학 학생회"
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="username">아이디</label>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    value={form.username}
+                                    onChange={handleChange}
+                                    placeholder="예: ieum_admin"
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="password">비밀번호</label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    value={form.password}
+                                    onChange={handleChange}
+                                    placeholder="비밀번호를 입력하세요"
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.modalActions}>
+                            <button className={styles.secondaryButton} onClick={closeModal}>취소</button>
+                            <button className={styles.primaryButton} onClick={handleAdd} disabled={!form.orgName || !form.username || !form.password}>추가</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 } 

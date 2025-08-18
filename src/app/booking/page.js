@@ -92,7 +92,8 @@ export default function BookingPage() {
     const RESERVATION_STATES = {
         AVAILABLE: 'available',      // 이용 가능 (회색)
         PENDING: 'pending',          // 예약 중 (연빨강)
-        CONFIRMED: 'confirmed'       // 예약 완료 (진한 빨강)
+        CONFIRMED: 'confirmed',      // 예약 완료 (진한 빨강)
+        DISABLED: 'disabled'         // 사용 불가 (회색)
     };
 
     // 임시 예약 데이터 (실제로는 API에서 가져올 데이터)
@@ -100,7 +101,8 @@ export default function BookingPage() {
         // 예시: {dayIndex: {hourIndex: state}}
         0: { 3: RESERVATION_STATES.PENDING, 4: RESERVATION_STATES.PENDING, 5: RESERVATION_STATES.PENDING, 6: RESERVATION_STATES.PENDING, 7: RESERVATION_STATES.PENDING }, // SUN 3AM-7AM 예약 중
         1: { 10: RESERVATION_STATES.CONFIRMED, 11: RESERVATION_STATES.CONFIRMED, 12: RESERVATION_STATES.CONFIRMED }, // MON 10AM-12PM 예약 완료
-        2: { 15: RESERVATION_STATES.PENDING, 16: RESERVATION_STATES.PENDING }, // TUE 3PM-4PM 예약 중
+        2: { 15: RESERVATION_STATES.PENDING, 16: RESERVATION_STATES.PENDING, 18: RESERVATION_STATES.DISABLED, 19: RESERVATION_STATES.DISABLED }, // TUE 3PM-4PM 예약 중, 6PM-7PM 사용불가
+        3: { 9: RESERVATION_STATES.DISABLED, 14: RESERVATION_STATES.CONFIRMED, 15: RESERVATION_STATES.CONFIRMED }, // WED 9AM 사용불가, 2PM-3PM 예약완료
     });
 
     // 선택된 슬롯들 관리

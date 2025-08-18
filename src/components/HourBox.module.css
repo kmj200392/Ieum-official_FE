@@ -1,7 +1,6 @@
 .box {
     height: 48px;
     border: none;
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,51 +9,74 @@
     transition: all 0.2s ease;
     cursor: pointer;
     backdrop-filter: blur(10px);
+    margin-bottom: 0;
 }
 
-/* Default (available) */
+/* Position-specific border radius */
+.firstInColumn {
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+}
+
+.lastInColumn {
+    border-radius: 0 0 8px 8px;
+    margin-top: 0;
+}
+
+.middleInColumn {
+    border-radius: 0;
+    margin: 0;
+}
+
+/* Default (available) - 지금과 동일 */
 .available {
     background: rgba(255, 255, 255, 0.2);
     color: #333333;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .available:hover {
     background: rgba(255, 255, 255, 0.35);
 }
 
-/* onHover (explicit) */
+/* onHover - 버건디 */
 .hover {
-    background: rgba(255, 255, 255, 0.35);
-    color: #333333;
+    background: #800020;
+    color: #FFFFFF;
+    border: 1px solid #800020;
 }
 
-/* Selected */
+/* Selected - 버건디 */
 .selected {
-    background: rgba(0, 0, 0, 0.7);
+    background: #800020;
     color: #FFFFFF;
+    border: 1px solid #800020;
 }
 
 .selected:hover {
-    background: rgba(0, 0, 0, 0.8);
+    background: #660019;
 }
 
-/* Disabled (unavailable) */
+/* Disabled - #5c5c5c 투명도 50% */
 .disabled {
-    background: rgba(200, 200, 200, 0.3);
-    color: #888888;
-    cursor: not-allowed;
-}
-
-/* Pending */
-.pending {
-    background: rgba(218, 152, 164, 0.8);
+    background: rgba(92, 92, 92, 0.5);
     color: #FFFFFF;
     cursor: not-allowed;
+    border: 1px solid rgba(92, 92, 92, 0.3);
+}
+
+/* Pending - #6F3037 투명도 50% */
+.pending {
+    background: rgba(111, 48, 55, 0.5);
+    color: #FFFFFF;
+    cursor: not-allowed;
+    border: 1px solid rgba(111, 48, 55, 0.3);
 }
 
 /* Confirmed */
 .confirmed {
-    background: rgba(164, 7, 50, 0.9);
+    background: #800020;
     color: #FFFFFF;
     cursor: not-allowed;
+    border: 1px solid #800020;
 }

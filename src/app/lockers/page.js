@@ -11,6 +11,7 @@ export default function LockersPage() {
         username: "",
         password: ""
     });
+    const [loginError, setLoginError] = useState("");
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -18,14 +19,15 @@ export default function LockersPage() {
             ...prev,
             [name]: value,
         }));
+        if (loginError) setLoginError("");
     };
 
     const handleLogin = (e) => {
         e.preventDefault();
         if (formData.username === "test" && formData.password === "test") {
-            alert("로그인되었습니다. (임시: 사물함 신청 기능은 다음 단계에서 연결됩니다)");
+            // 성공 시 별도 알림 없음
         } else {
-            alert("아이디 또는 비밀번호가 올바르지 않습니다. (임시: test/test)");
+            setLoginError("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
     };
 
@@ -49,6 +51,7 @@ export default function LockersPage() {
                             value={formData.username}
                             onChange={handleInputChange}
                             required
+                            error={loginError}
                         />
                     </div>
                     <div className={styles.inputField}>
@@ -61,6 +64,7 @@ export default function LockersPage() {
                             value={formData.password}
                             onChange={handleInputChange}
                             required
+                            error={loginError}
                         />
                     </div>
                     <button type="submit" className={styles.loginButton}>신청하러 가기</button>

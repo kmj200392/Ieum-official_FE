@@ -15,6 +15,7 @@ export default function InputField({
     disabled = false,
     error = "",
     helperText = "",
+    showErrorText = false,
     containerClassName = "",
     inputClassName = "",
     style,
@@ -24,8 +25,8 @@ export default function InputField({
     const hasError = Boolean(error);
     const describedByIds = [];
 
-    if (helperText) describedByIds.push(`${inputId}-help`);
-    if (hasError) describedByIds.push(`${inputId}-error`);
+    if (showErrorText && helperText) describedByIds.push(`${inputId}-help`);
+    if (showErrorText && hasError) describedByIds.push(`${inputId}-error`);
 
     return (
         <div className={`${styles.container} ${containerClassName}`} style={style}>
@@ -51,10 +52,10 @@ export default function InputField({
                 aria-describedby={describedByIds.join(" ") || undefined}
                 autoComplete={autoComplete}
             />
-            {helperText && !hasError && (
+            {showErrorText && helperText && !hasError && (
                 <div id={`${inputId}-help`} className={styles.helperText}>{helperText}</div>
             )}
-            {hasError && (
+            {showErrorText && hasError && (
                 <div id={`${inputId}-error`} className={styles.errorText}>{error}</div>
             )}
         </div>

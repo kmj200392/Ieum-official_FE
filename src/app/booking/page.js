@@ -11,6 +11,8 @@ export default function BookingPage() {
         username: "",
         password: ""
     });
+    const [loading, setLoading] = useState(false);
+    const [loginError, setLoginError] = useState("");
 
     // 현재 날짜 기준으로 일주일 날짜 계산
     const [weekDates, setWeekDates] = useState([]);
@@ -83,15 +85,52 @@ export default function BookingPage() {
             ...prev,
             [name]: value
         }));
+        if (loginError) setLoginError("");
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // 임시 로그인 로직: 아이디와 비밀번호가 모두 "test"인 경우 로그인 성공
-        if (formData.username === "test" && formData.password === "test") {
+        setLoginError("");
+        setLoading(true);
+        try {
+            const res = await fetch("https://dev-api.kucisc.kr/api/account/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "accept": "application/json",
+                },
+                body: JSON.stringify({
+                    data: {
+                        username: formData.username,
+                        password: formData.password,
+                    }
+                }),
+            });
+
+            if (!res.ok) {
+                let message = "로그인에 실패했습니다.";
+                try {
+                    const errData = await res.json();
+                    message = errData.message || errData.detail || message;
+                } catch { }
+                setLoginError(message);
+                return;
+            }
+
+            let data = null;
+            try { data = await res.json(); } catch { }
+            if (data) {
+                const accessToken = data.access || data.token || data.access_token;
+                const refreshToken = data.refresh || data.refresh_token;
+                if (accessToken) localStorage.setItem("accessToken", accessToken);
+                if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+            }
+
             setIsLoggedIn(true);
-        } else {
-            alert("아이디 또는 비밀번호가 올바르지 않습니다. (임시: test/test)");
+        } catch (err) {
+            setLoginError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -457,6 +496,9 @@ export default function BookingPage() {
                                 onChange={handleInputChange}
                                 required
                                 inputClassName=""
+                                disabled={loading}
+                                autoComplete="username"
+                                error={loginError}
                             />
                         </div>
                         <div className={styles.inputField}>
@@ -470,9 +512,12 @@ export default function BookingPage() {
                                 onChange={handleInputChange}
                                 required
                                 inputClassName=""
+                                disabled={loading}
+                                autoComplete="current-password"
+                                error={loginError}
                             />
                         </div>
-                        <button type="submit" className={styles.loginButton}>로그인</button>
+                        <button type="submit" className={styles.loginButton} disabled={loading}>{loading ? "로그인 중..." : "로그인"}</button>
                     </form>
                 </main>
                 <Footer />

@@ -63,7 +63,18 @@
     cursor: not-allowed;
 }
 
+/* Error state: always show red border */
 .inputError {
+    border-color: #A40732;
+    border-width: 2px;
+}
+
+/* Increase specificity to win over descendant selectors from page modules */
+.input.inputError {
+    border: 2px solid #A40732;
+}
+
+.inputError:focus {
     border-color: #A40732;
 }
 

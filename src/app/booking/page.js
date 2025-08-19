@@ -470,12 +470,21 @@ export default function BookingPage() {
                 return;
             }
 
-            // 주차의 시작/끝 날짜를 ISO 문자열로 변환
-            const startDateString = startDate.toISOString();
-            const endDateString = endDate.toISOString();
+            // 주차의 시작/끝 날짜를 한국 시간대(+09:00) 문자열로 변환
+            const formatToKoreanTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
+            };
+            const startDateString = formatToKoreanTime(startDate);
+            const endDateString = formatToKoreanTime(endDate);
 
             const response = await fetch(
-                `https://dev-api.kucisc.kr/api/room/my/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
+                `https://dev-api.kucisc.kr/api/room/overview/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
                 {
                     method: 'GET',
                     headers: {

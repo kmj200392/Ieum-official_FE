@@ -259,30 +259,87 @@
     cursor: pointer;
 }
 
-/* 주 네비게이션 */
-.weekNavigation {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin: 20px 0;
-}
+
 
 .weekNavigationButton {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border: none;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 1);
     color: #333333;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 70px;
+    /* DateHeader 영역 중간에 배치 */
+    z-index: 10;
+}
+
+.weekNavigationButton:first-of-type {
+    left: -60px;
+    /* BookingBoard 왼쪽에 배치 */
+}
+
+.weekNavigationButton:last-of-type {
+    right: -60px;
+    /* BookingBoard 오른쪽에 배치 */
 }
 
 .weekNavigationButton:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.05);
+}
+
+/* Booking Board 컨테이너 */
+.bookingBoardContainer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+}
+
+/* 중앙 그룹: BookingBoard 중앙 배치 */
+.centerGroup {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+}
+
+/* 시간 컬럼 */
+.timeColumn {
+    width: 45px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-top: 24px;
+    z-index: 1;
+    position: absolute;
+    left: -69px;
+    /* BookingBoard 왼쪽에 배치 (45px width + 24px gap) */
+}
+
+.timeLabel {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    margin-bottom: 0;
+}
+
+.timeLabel:first-child {
+    margin-top: 90px;
+    /* Day(40px) + Date(40px) + gap(10px) 높이만큼 상단 여백 추가 */
 }
 
 /* 반응형 디자인 */
@@ -341,17 +398,24 @@
 
 
 
-    .weekNavigationButton {
-        width: 100%;
-        height: 40px;
-        font-size: 1.2rem;
+    .timeColumn {
+        left: -60px;
+        /* 모바일에서 시간 컬럼 위치 조정 */
     }
 
-    .weekNavigationContainer {
-        flex-direction: row;
-        margin-left: 0;
-        margin-top: 1rem;
-        justify-content: center;
+    .weekNavigationButton {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        top: 60px;
+    }
+
+    .weekNavigationButton:first-of-type {
+        left: -50px;
+    }
+
+    .weekNavigationButton:last-of-type {
+        right: -50px;
     }
 
 

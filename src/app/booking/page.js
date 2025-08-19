@@ -682,35 +682,53 @@ export default function BookingPage() {
                         <h1 className={styles.title}>학생회실 대관</h1>
                     </div>
 
-                    {/* 주 네비게이션 */}
-                    <div className={styles.weekNavigation}>
+                    <div className={styles.bookingBoardContainer}>
+                        {/* 이전 주 버튼 */}
                         <button
                             className={styles.weekNavigationButton}
                             onClick={goToPreviousWeek}
                             aria-label="이전 주"
                         >
-                            &lt;
+                            <svg width="10" height="20" viewBox="0 0 10 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 2L2 10L10 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                         </button>
+
+                        {/* 중앙 그룹: 시간 컬럼 + BookingBoard */}
+                        <div className={styles.centerGroup}>
+                            {/* 시간 컬럼 */}
+                            <div className={styles.timeColumn}>
+                                {Array.from({ length: 24 }, (_, i) => (
+                                    <div key={i} className={styles.timeLabel}>
+                                        {i === 0 ? "12AM" : i === 12 ? "12PM" : i > 12 ? `${i - 12}PM` : `${i}AM`}
+                                    </div>
+                                ))}
+                            </div>
+
+                            <BookingBoard
+                                weekDates={weekDates}
+                                selectedDayIndex={selectedDayIndex}
+                                onSelectDay={setSelectedDayIndex}
+                                reservations={reservations}
+                                selectedSlots={selectedSlots}
+                                onSlotMouseDown={handleMouseDown}
+                                onSlotMouseEnter={handleMouseEnter}
+                                onSlotMouseUp={handleMouseUp}
+                                RESERVATION_STATES={RESERVATION_STATES}
+                            />
+                        </div>
+
+                        {/* 다음 주 버튼 */}
                         <button
                             className={styles.weekNavigationButton}
                             onClick={goToNextWeek}
                             aria-label="다음 주"
                         >
-                            &gt;
+                            <svg width="10" height="20" viewBox="0 0 10 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 18L8 10L0 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                         </button>
                     </div>
-
-                    <BookingBoard
-                        weekDates={weekDates}
-                        selectedDayIndex={selectedDayIndex}
-                        onSelectDay={setSelectedDayIndex}
-                        reservations={reservations}
-                        selectedSlots={selectedSlots}
-                        onSlotMouseDown={handleMouseDown}
-                        onSlotMouseEnter={handleMouseEnter}
-                        onSlotMouseUp={handleMouseUp}
-                        RESERVATION_STATES={RESERVATION_STATES}
-                    />
 
                     <div className={styles.infoSection}>
                         <p className={styles.infoText}>

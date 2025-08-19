@@ -49,15 +49,6 @@ export default function BookingBoard({
     return (
         <div className={styles.container}>
             <div className={styles.boardWrapper} onMouseLeave={handleMouseLeave}>
-                <div className={styles.timeColumn}>
-                    {/* 시간 표시 */}
-                    {Array.from({ length: 24 }, (_, i) => (
-                        <div key={i} className={styles.timeLabel}>
-                            {i === 0 ? "12AM" : i === 12 ? "12PM" : i > 12 ? `${i - 12}PM` : `${i}AM`}
-                        </div>
-                    ))}
-                </div>
-
                 <div className={styles.gridSection}>
                     <DateHeader
                         weekDates={weekDates}

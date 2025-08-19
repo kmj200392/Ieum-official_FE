@@ -682,11 +682,27 @@ export default function BookingPage() {
                         <h1 className={styles.title}>학생회실 대관</h1>
                     </div>
 
+                    {/* 주 네비게이션 */}
+                    <div className={styles.weekNavigation}>
+                        <button
+                            className={styles.weekNavigationButton}
+                            onClick={goToPreviousWeek}
+                            aria-label="이전 주"
+                        >
+                            &lt;
+                        </button>
+                        <button
+                            className={styles.weekNavigationButton}
+                            onClick={goToNextWeek}
+                            aria-label="다음 주"
+                        >
+                            &gt;
+                        </button>
+                    </div>
+
                     <BookingBoard
                         weekDates={weekDates}
                         selectedDayIndex={selectedDayIndex}
-                        onPrevWeek={goToPreviousWeek}
-                        onNextWeek={goToNextWeek}
                         onSelectDay={setSelectedDayIndex}
                         reservations={reservations}
                         selectedSlots={selectedSlots}

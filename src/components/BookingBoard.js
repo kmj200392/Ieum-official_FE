@@ -8,8 +8,6 @@ import HourBox, { HourState } from "./HourBox";
 export default function BookingBoard({
     weekDates = [],
     selectedDayIndex = 0,
-    onPrevWeek,
-    onNextWeek,
     onSelectDay,
     reservations = {},
     selectedSlots = new Set(),
@@ -64,8 +62,6 @@ export default function BookingBoard({
                     <DateHeader
                         weekDates={weekDates}
                         selectedDayIndex={selectedDayIndex}
-                        onPrev={onPrevWeek}
-                        onNext={onNextWeek}
                         onSelectDay={onSelectDay}
                     />
 

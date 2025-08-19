@@ -1,96 +1,79 @@
 .container {
-    display: grid;
-    grid-template-columns: 48px 1fr 48px;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 12px;
-}
-
-.navLeft,
-.navRight {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.navButton {
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.3);
-    color: #333333;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-}
-
-.navButton:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.headerMain {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
 .weekDays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 15px;
 }
 
-.weekDay {
-    background: rgba(255, 255, 255, 0.25);
-    height: 56px;
+.dayItem {
+    background: transparent;
+    height: 40px;
+    width: 144px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333333;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: #5C5C5C;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.193359375em;
+    padding: 2px 47px;
+    box-sizing: border-box;
 }
 
 .weekDates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 15px;
 }
 
-.datePill {
-    height: 56px;
-    border-radius: 12px;
+.dateItem {
+    height: 40px;
+    width: 144px;
     border: none;
-    background: rgba(255, 255, 255, 0.25);
-    color: #333333;
-    font-size: 18px;
-    font-weight: 500;
+    background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
+    padding: 0px 19px;
+    box-sizing: border-box;
 }
 
-.datePill:hover {
-    background: rgba(255, 255, 255, 0.4);
+.dateCircle {
+    width: 39px;
+    height: 39px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: #5C5C5C;
+    line-height: 1.193359375em;
+    text-align: center;
+    transition: all 0.2s ease;
+    padding: 0px 14px;
+    box-sizing: border-box;
 }
 
-.active {
-    background: rgba(0, 0, 0, 0.7);
-    color: #FFFFFF;
+/* 오늘 날짜 스타일 */
+.dateCircle.today {
+    background: #6F3037;
+    color: #FBFBFB;
 }
 
-.active:hover {
-    background: rgba(0, 0, 0, 0.8);
-}
-
-.dateText {
-    font-weight: 500;
+/* 선택된 날짜 (기존 기능 유지, 필요시 사용) */
+.dateItem.selected .dateCircle {
+    /* 선택 상태 스타일을 원하면 여기에 추가 */
 }

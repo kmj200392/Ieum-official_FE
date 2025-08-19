@@ -259,6 +259,32 @@
     cursor: pointer;
 }
 
+/* 주 네비게이션 */
+.weekNavigation {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.weekNavigationButton {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    color: #333333;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.weekNavigationButton:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .loginContainer {

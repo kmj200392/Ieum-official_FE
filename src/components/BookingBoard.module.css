@@ -2,27 +2,27 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 24px;
+    padding: 24px 0;
 }
 
 .boardWrapper {
-    width: 100%;
-    max-width: 1200px;
+    width: 1147px;
+    max-width: 1147px;
     margin: 0 auto;
-    padding: 50px 40px;
+    padding: 15px;
     display: flex;
-    gap: 24px;
+    gap: 14px;
     border-radius: 50px;
-    background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.15) 100%);
-    border: none;
-    border-image: none;
+    background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.2) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(42px);
+    box-shadow: inset -5px -5px 250px 0px rgba(255, 255, 255, 0.02);
     overflow-x: auto;
     position: relative;
 }
 
 .timeColumn {
-    width: 70px;
+    width: 20px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -31,7 +31,7 @@
 }
 
 .timeLabel {
-    height: 52px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,15 +42,15 @@
 }
 
 .timeLabel:first-child {
-    margin-top: 112px;
-    /* 요일 헤더(56px) + 날짜 헤더(56px) 높이만큼 상단 여백 추가 */
+    margin-top: 90px;
+    /* 요일 헤더(40px) + 날짜 헤더(40px) + gap(10px) 높이만큼 상단 여백 추가 */
 }
 
 .gridSection {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 700px;
+    width: 1098px;
     overflow: visible;
     z-index: 1;
 }
@@ -58,8 +58,9 @@
 /* 시간 슬롯 그리드 */
 .timeSlotsGrid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(7, 144px);
+    gap: 15px;
+    justify-content: start;
 }
 
 /* 각 요일 컬럼 */

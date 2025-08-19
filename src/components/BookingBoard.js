@@ -50,7 +50,7 @@ export default function BookingBoard({
 
     return (
         <div className={styles.container}>
-            <div className={styles.boardWrapper}>
+            <div className={styles.boardWrapper} onMouseLeave={handleMouseLeave}>
                 <div className={styles.timeColumn}>
                     {/* 시간 표시 */}
                     {Array.from({ length: 24 }, (_, i) => (
@@ -70,7 +70,7 @@ export default function BookingBoard({
                     />
 
                     {/* 7일 x 24시간 그리드 */}
-                    <div className={styles.timeSlotsGrid}>
+                    <div className={styles.timeSlotsGrid} onMouseLeave={handleMouseLeave}>
                         {Array.from({ length: 7 }, (_, dayIndex) => (
                             <div key={dayIndex} className={styles.dayColumn}>
                                 {Array.from({ length: 24 }, (_, hourIndex) => {

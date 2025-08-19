@@ -53,6 +53,10 @@ export default function BookingPage() {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [requestEmail, setRequestEmail] = useState("");
     const [requestPurpose, setRequestPurpose] = useState("");
+    const [requestOrganization, setRequestOrganization] = useState("");
+    const [requestLoading, setRequestLoading] = useState(false);
+    const [requestError, setRequestError] = useState("");
+    const [userInfoLoading, setUserInfoLoading] = useState(false);
 
     // 일주일 날짜 계산 함수
     const calculateWeekDates = (weekStart) => {
@@ -86,7 +90,13 @@ export default function BookingPage() {
     useEffect(() => {
         const weekDates = calculateWeekDates(currentWeekStart);
         setWeekDates(weekDates);
-    }, [currentWeekStart]);
+
+        // 주차가 변경될 때마다 예약 목록 다시 가져오기
+        if (isLoggedIn) {
+            const { start, end } = getWeekDateRange(currentWeekStart);
+            fetchReservations(start, end);
+        }
+    }, [currentWeekStart, isLoggedIn]);
 
     // 예약 상태 타입 정의
     const RESERVATION_STATES = {
@@ -96,14 +106,9 @@ export default function BookingPage() {
         DISABLED: 'disabled'         // 사용 불가 (회색)
     };
 
-    // 임시 예약 데이터 (실제로는 API에서 가져올 데이터)
-    const [reservations, setReservations] = useState({
-        // 예시: {dayIndex: {hourIndex: state}}
-        0: { 3: RESERVATION_STATES.PENDING, 4: RESERVATION_STATES.PENDING, 5: RESERVATION_STATES.PENDING, 6: RESERVATION_STATES.PENDING, 7: RESERVATION_STATES.PENDING }, // SUN 3AM-7AM 예약 중
-        1: { 10: RESERVATION_STATES.CONFIRMED, 11: RESERVATION_STATES.CONFIRMED, 12: RESERVATION_STATES.CONFIRMED }, // MON 10AM-12PM 예약 완료
-        2: { 15: RESERVATION_STATES.PENDING, 16: RESERVATION_STATES.PENDING, 18: RESERVATION_STATES.DISABLED, 19: RESERVATION_STATES.DISABLED }, // TUE 3PM-4PM 예약 중, 6PM-7PM 사용불가
-        3: { 9: RESERVATION_STATES.DISABLED, 14: RESERVATION_STATES.CONFIRMED, 15: RESERVATION_STATES.CONFIRMED }, // WED 9AM 사용불가, 2PM-3PM 예약완료
-    });
+    // 예약 데이터 (API에서 가져올 데이터)
+    const [reservations, setReservations] = useState({});
+    const [reservationsLoading, setReservationsLoading] = useState(false);
 
     // 선택된 슬롯들 관리
     const [selectedSlots, setSelectedSlots] = useState(new Set());
@@ -176,6 +181,10 @@ export default function BookingPage() {
             }
 
             setIsLoggedIn(true);
+
+            // 로그인 성공 후 현재 주차의 예약 목록 가져오기
+            const { start, end } = getWeekDateRange(currentWeekStart);
+            fetchReservations(start, end);
         } catch (e) {
             setLoginError(e?.message || "로그인에 실패했습니다.");
         } finally {
@@ -409,6 +418,294 @@ export default function BookingPage() {
         setHasDragged(false);
     };
 
+    // 선택된 슬롯들에서 시작/끝 시간 계산
+    const getSelectedTimeRange = () => {
+        if (selectedSlots.size === 0) return null;
+
+        const sortedSlots = Array.from(selectedSlots)
+            .map(parseSlotKey)
+            .sort((a, b) => {
+                if (a.dayIndex !== b.dayIndex) return a.dayIndex - b.dayIndex;
+                return a.hourIndex - b.hourIndex;
+            });
+
+        const firstSlot = sortedSlots[0];
+        const lastSlot = sortedSlots[sortedSlots.length - 1];
+
+        // 시작 시간: 첫 번째 슬롯의 시간
+        const startDate = new Date(weekDates[firstSlot.dayIndex]);
+        startDate.setHours(firstSlot.hourIndex, 0, 0, 0);
+
+        // 끝 시간: 마지막 슬롯의 다음 시간 (1시간 후)
+        const endDate = new Date(weekDates[lastSlot.dayIndex]);
+        endDate.setHours(lastSlot.hourIndex + 1, 0, 0, 0);
+
+        // 한국 시간대로 포맷 (ISO string with +09:00)
+        const formatToKoreanTime = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
+        };
+
+        return {
+            startTime: formatToKoreanTime(startDate),
+            endTime: formatToKoreanTime(endDate)
+        };
+    };
+
+    // 예약 목록 API 호출
+    const fetchReservations = async (startDate, endDate) => {
+        if (!isLoggedIn) return;
+
+        setReservationsLoading(true);
+        try {
+            const access = getAccessToken();
+            if (!access) {
+                console.warn("토큰이 없어서 예약 목록을 가져올 수 없습니다.");
+                return;
+            }
+
+            // 주차의 시작/끝 날짜를 ISO 문자열로 변환
+            const startDateString = startDate.toISOString();
+            const endDateString = endDate.toISOString();
+
+            const response = await fetch(
+                `https://dev-api.kucisc.kr/api/room/my/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${access}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                console.warn("예약 목록을 가져오는데 실패했습니다:", response.status);
+                return;
+            }
+
+            const reservationData = await response.json();
+
+            // API 응답을 reservations 객체 형태로 변환
+            const newReservations = {};
+
+            reservationData.forEach(reservation => {
+                const startTime = new Date(reservation.start_time);
+                const endTime = new Date(reservation.end_time);
+
+                // 예약이 현재 주차에 속하는지 확인
+                if (startTime >= startDate && startTime < endDate) {
+                    // 요일 계산 (일요일 = 0)
+                    const dayIndex = startTime.getDay();
+
+                    // 시작 시간부터 끝 시간까지의 모든 시간대 표시
+                    let currentTime = new Date(startTime);
+                    while (currentTime < endTime) {
+                        const hour = currentTime.getHours();
+
+                        if (!newReservations[dayIndex]) {
+                            newReservations[dayIndex] = {};
+                        }
+
+                        // 상태 매핑: API의 status를 우리 시스템의 상태로 변환
+                        let status;
+                        switch (reservation.status) {
+                            case 'PENDING':
+                                status = RESERVATION_STATES.PENDING;
+                                break;
+                            case 'CONFIRMED':
+                                status = RESERVATION_STATES.CONFIRMED;
+                                break;
+                            case 'REJECTED':
+                            case 'CANCELLED':
+                                status = RESERVATION_STATES.DISABLED;
+                                break;
+                            default:
+                                status = RESERVATION_STATES.PENDING;
+                        }
+
+                        newReservations[dayIndex][hour] = status;
+
+                        // 다음 시간으로 이동
+                        currentTime.setHours(currentTime.getHours() + 1);
+                    }
+                }
+            });
+
+            setReservations(newReservations);
+
+        } catch (error) {
+            console.error("예약 목록 조회 오류:", error);
+        } finally {
+            setReservationsLoading(false);
+        }
+    };
+
+    // 주차의 시작/끝 날짜 계산
+    const getWeekDateRange = (weekStart) => {
+        const sunday = new Date(weekStart);
+        sunday.setDate(weekStart.getDate() - weekStart.getDay());
+        sunday.setHours(0, 0, 0, 0);
+
+        const nextSunday = new Date(sunday);
+        nextSunday.setDate(sunday.getDate() + 7);
+
+        return { start: sunday, end: nextSunday };
+    };
+
+    // 현재 사용자 정보 가져오기
+    const fetchUserInfo = async () => {
+        if (!isLoggedIn) return;
+
+        setUserInfoLoading(true);
+        try {
+            const access = getAccessToken();
+            if (!access) {
+                console.warn("토큰이 없어서 사용자 정보를 가져올 수 없습니다.");
+                return;
+            }
+
+            const response = await fetch('https://dev-api.kucisc.kr/api/account/me/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${access}`
+                }
+            });
+
+            if (!response.ok) {
+                console.warn("사용자 정보를 가져오는데 실패했습니다:", response.status);
+                return;
+            }
+
+            const userData = await response.json();
+            console.log('사용자 정보:', userData);
+
+            // first_name을 단체명으로 설정
+            if (userData.first_name) {
+                setRequestOrganization(userData.first_name);
+            }
+
+        } catch (error) {
+            console.error("사용자 정보 조회 오류:", error);
+        } finally {
+            setUserInfoLoading(false);
+        }
+    };
+
+    // 대관 신청 API 호출
+    const handleReservationSubmit = async () => {
+        if (!requestEmail || !requestPurpose) {
+            setRequestError("모든 필드를 입력해주세요.");
+            return;
+        }
+
+        if (selectedSlots.size === 0) {
+            setRequestError("예약할 시간을 선택해주세요.");
+            return;
+        }
+
+        const timeRange = getSelectedTimeRange();
+        if (!timeRange) {
+            setRequestError("시간 선택에 오류가 있습니다.");
+            return;
+        }
+
+        setRequestLoading(true);
+        setRequestError("");
+
+        try {
+            const access = getAccessToken();
+            if (!access) {
+                throw new Error("로그인이 필요합니다.");
+            }
+
+            const requestBody = {
+                purpose: requestPurpose,
+                contact_email: requestEmail,
+                start_time: timeRange.startTime,
+                end_time: timeRange.endTime
+            };
+
+            console.log('대관 신청 요청:', requestBody);
+
+            const response = await fetch('https://dev-api.kucisc.kr/api/room/reserve/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${access}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const rawText = await response.clone().text().catch(() => '');
+                let errorData;
+                try {
+                    errorData = rawText ? JSON.parse(rawText) : await response.json().catch(() => ({}));
+                } catch (e) {
+                    errorData = rawText || {};
+                }
+                console.error('대관 신청 실패 - 상세 정보:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    errorData: errorData,
+                    rawText,
+                    requestBody: requestBody
+                });
+
+                // 에러 데이터가 배열인 경우 첫 번째 항목 확인
+                if (Array.isArray(errorData) && errorData.length > 0) {
+                    console.error('에러 배열 내용:', errorData);
+                    throw new Error(errorData[0] || `HTTP ${response.status}`);
+                }
+
+                // 일반적인 에러 처리
+                let errorMessage = errorData.detail || errorData.message || errorData.error;
+
+                // 객체인 경우 모든 필드의 에러 메시지 수집
+                if (typeof errorData === 'object' && !errorMessage) {
+                    const errors = [];
+                    Object.keys(errorData).forEach(key => {
+                        if (Array.isArray(errorData[key])) {
+                            errors.push(`${key}: ${errorData[key].join(', ')}`);
+                        } else if (typeof errorData[key] === 'string') {
+                            errors.push(`${key}: ${errorData[key]}`);
+                        }
+                    });
+                    errorMessage = errors.length > 0 ? errors.join('; ') : `HTTP ${response.status}`;
+                }
+
+                throw new Error(errorMessage || `HTTP ${response.status}`);
+            }
+
+            // 성공 처리
+            alert("대관 신청이 완료되었습니다!");
+            setIsRequestModalOpen(false);
+            setRequestEmail("");
+            setRequestPurpose("");
+            setRequestOrganization("");
+            setSelectedSlots(new Set()); // 선택된 슬롯 초기화
+
+            // 예약 목록 다시 가져오기
+            const { start, end } = getWeekDateRange(currentWeekStart);
+            fetchReservations(start, end);
+
+        } catch (error) {
+            console.error('대관 신청 오류:', error);
+            setRequestError(error.message || "대관 신청 중 오류가 발생했습니다.");
+        } finally {
+            setRequestLoading(false);
+        }
+    };
+
     // 두 슬롯 사이의 모든 슬롯 가져오기 (드래그 시작점 기준으로 정렬)
     const getSlotsBetween = (startSlot, endSlot) => {
         const slots = [];
@@ -618,6 +915,7 @@ export default function BookingPage() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailRegex.test(requestEmail);
+    const isFormValid = isEmailValid && requestPurpose.trim() !== "";
 
     // 1) 아직 토큰 확인 중이면 아무 것도 렌더링하지 않음 (깜빡임 방지)
     if (!authReady) {
@@ -712,17 +1010,23 @@ export default function BookingPage() {
                                 ))}
                             </div>
 
-                            <BookingBoard
-                                weekDates={weekDates}
-                                selectedDayIndex={selectedDayIndex}
-                                onSelectDay={setSelectedDayIndex}
-                                reservations={reservations}
-                                selectedSlots={selectedSlots}
-                                onSlotMouseDown={handleMouseDown}
-                                onSlotMouseEnter={handleMouseEnter}
-                                onSlotMouseUp={handleMouseUp}
-                                RESERVATION_STATES={RESERVATION_STATES}
-                            />
+                            {reservationsLoading ? (
+                                <div className={styles.loadingMessage}>
+                                    예약 정보를 불러오는 중...
+                                </div>
+                            ) : (
+                                <BookingBoard
+                                    weekDates={weekDates}
+                                    selectedDayIndex={selectedDayIndex}
+                                    onSelectDay={setSelectedDayIndex}
+                                    reservations={reservations}
+                                    selectedSlots={selectedSlots}
+                                    onSlotMouseDown={handleMouseDown}
+                                    onSlotMouseEnter={handleMouseEnter}
+                                    onSlotMouseUp={handleMouseUp}
+                                    RESERVATION_STATES={RESERVATION_STATES}
+                                />
+                            )}
                         </div>
 
                         {/* 다음 주 버튼 */}
@@ -752,6 +1056,8 @@ export default function BookingPage() {
                 onClick={() => {
                     if (selectedSlots.size === 0) return;
                     setIsRequestModalOpen(true);
+                    setRequestError(""); // 모달 열 때 에러 초기화
+                    fetchUserInfo(); // 사용자 정보 가져오기
                 }}
                 disabled={selectedSlots.size === 0}
             >
@@ -772,10 +1078,21 @@ export default function BookingPage() {
                                 <label>대관 종료 시간</label>
                                 <input type="text" placeholder={endLabel} disabled />
                             </div>
-                            <div className={styles.formGroup}>
-                                <label>단체명</label>
-                                <input type="text" placeholder="정보대학 학생회" />
-                            </div>
+                            {requestOrganization && (
+                                <div className={styles.formGroup}>
+                                    <label>단체명</label>
+                                    <input
+                                        type="text"
+                                        placeholder="단체명"
+                                        value={requestOrganization}
+                                        disabled={true}
+                                        className={styles.disabledInput}
+                                    />
+                                    <small className={styles.helperText}>
+                                        현재 계정으로 신청됩니다
+                                    </small>
+                                </div>
+                            )}
                             <div className={styles.formGroup}>
                                 <label>대관 목적</label>
                                 <textarea
@@ -798,23 +1115,28 @@ export default function BookingPage() {
                                 )}
                             </div>
                         </div>
+                        {requestError && (
+                            <div className={styles.errorMessage}>
+                                {requestError}
+                            </div>
+                        )}
                         <div className={styles.modalActions}>
                             <button
                                 className={styles.secondaryButton}
-                                onClick={() => setIsRequestModalOpen(false)}
+                                onClick={() => {
+                                    setIsRequestModalOpen(false);
+                                    setRequestError("");
+                                    setRequestOrganization("");
+                                }}
                             >
                                 취소
                             </button>
                             <button
                                 className={styles.primaryButton}
-                                disabled={!isEmailValid}
-                                onClick={() => {
-                                    if (!isEmailValid) return;
-                                    alert("대관 신청이 완료되었습니다!");
-                                    setIsRequestModalOpen(false);
-                                }}
+                                disabled={!isFormValid || requestLoading}
+                                onClick={handleReservationSubmit}
                             >
-                                대관 신청하기
+                                {requestLoading ? "신청 중..." : "대관 신청하기"}
                             </button>
                         </div>
                     </div>

@@ -420,3 +420,36 @@
 
 
 }
+
+/* 에러 메시지 스타일 */
+.errorMessage {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* 로딩 메시지 스타일 */
+.loadingMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    font-size: 18px;
+    color: #666666;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+/* 비활성화된 입력 필드 스타일 */
+.disabledInput {
+    background-color: #f5f5f5 !important;
+    color: #666666 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}

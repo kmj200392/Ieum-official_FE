@@ -5,7 +5,7 @@ import Footer from "../../components/OnboardingFooter";
 import InputField from "../../components/InputField";
 import styles from "./page.module.css";
 import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens } from "../../utils/auth";
-import BookingBoard from "../../components/BookingBoard";
+import BookingBoard from "../../components/booking/BookingBoard";
 
 export default function BookingPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -140,37 +140,44 @@ export default function BookingPage() {
                 }),
             });
 
-            const status = res.status;
-
             if (!res.ok) {
                 let message = "로그인에 실패했습니다.";
                 try {
                     const errData = await res.json();
-                    // API 문서: 400/401 => { detail: string }
                     if (errData && typeof errData.detail === "string") {
                         message = errData.detail;
                     }
                 } catch { }
-                setLoginError(message);
-                return;
+                throw new Error(message);
             }
 
-            // 성공: { refresh, access }
-            let data = null;
-            try { data = await res.json(); } catch { }
-
+            const data = await res.json().catch(() => ({}));
             const access = data?.access;
             const refresh = data?.refresh;
+            if (typeof access !== "string") throw new Error("로그인 응답이 올바르지 않습니다.");
 
-            if (typeof access === "string") {
-                setTokens(access, refresh);
-                scheduleAccessTokenRefresh(access, refresh);
-                setIsLoggedIn(true);
-            } else {
-                setLoginError("로그인 응답 형식이 올바르지 않습니다.");
+            // 1) 클라이언트 토큰 저장 (client-side API 요청에 사용)
+            setTokens(access, refresh);
+            scheduleAccessTokenRefresh(access, refresh);
+
+            // 2) 서버 세션/역할 쿠키 설정 (middleware 보호용) - 선택적 처리
+            try {
+                const sessRes = await fetch("/api/user/session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ access, refresh }),
+                });
+                if (!sessRes.ok) {
+                    const errorData = await sessRes.json().catch(() => ({}));
+                    console.warn("세션 설정 실패 (무시하고 진행):", sessRes.status, errorData);
+                }
+            } catch (err) {
+                console.warn("세션 설정 에러 (무시하고 진행):", err.message);
             }
-        } catch (err) {
-            setLoginError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+
+            setIsLoggedIn(true);
+        } catch (e) {
+            setLoginError(e?.message || "로그인에 실패했습니다.");
         } finally {
             setLoading(false);
         }

@@ -113,4 +113,30 @@ export async function authorizedFetch(input, init = {}) {
         }
     }
     return response;
+}
+
+// 일반 사용자 로그아웃
+export async function userLogout() {
+    const refresh = getRefreshToken();
+    try {
+        await fetch("/api/user/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh }),
+        });
+    } catch { }
+    clearTokens();
+}
+
+// 관리자 로그아웃
+export async function adminLogout() {
+    const refresh = getRefreshToken();
+    try {
+        await fetch("/api/admin/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh }),
+        });
+    } catch { }
+    clearTokens();
 } 

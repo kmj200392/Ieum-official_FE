@@ -132,6 +132,14 @@ img {
   outline-offset: 2px;
 }
 
+/* 클릭 가능한 요소들의 포커스 outline 제거 */
+button:focus,
+a:focus,
+[role="button"]:focus,
+[tabindex]:focus {
+  outline: none;
+}
+
 /* 선택 텍스트 스타일 */
 ::selection {
   background: var(--primary-color);

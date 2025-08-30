@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./layout.module.css";
-import { getRefreshToken, clearTokens } from "@/utils/auth";
+import { adminLogout } from "@/utils/auth";
 
 export default function AdminDashboardLayout({ children }) {
     const pathname = usePathname();
@@ -11,16 +11,13 @@ export default function AdminDashboardLayout({ children }) {
 
     const handleLogout = async () => {
         try {
-            const refresh = getRefreshToken();
-            await fetch("/api/admin/logout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refresh }),
-            });
-        } catch { }
-        // Clear client tokens too
-        clearTokens();
-        router.replace("/");
+            await adminLogout();
+            router.replace("/admin");
+        } catch (error) {
+            console.error('Logout error:', error);
+            // 에러가 발생해도 강제 로그아웃
+            router.replace("/admin");
+        }
     };
 
     return (

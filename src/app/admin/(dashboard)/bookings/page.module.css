@@ -51,7 +51,7 @@
 
 .row {
     display: grid;
-    grid-template-columns: 1.2fr 2fr 1.2fr 2fr 1fr 1.4fr 1.8fr;
+    grid-template-columns: 1fr 1.5fr 1.8fr 1.5fr 1.8fr 1fr 1.2fr 2fr;
     gap: 0.75rem;
     padding: 0.875rem 1rem;
     border-bottom: 1px solid #eef2f7;
@@ -216,7 +216,7 @@
 
 @media (max-width: 960px) {
     .row {
-        grid-template-columns: 1.6fr 2fr 1fr 2fr 1fr 1.4fr 2.2fr;
+        grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1.5fr 1fr 1fr 1.8fr;
     }
 
     .searchInput {

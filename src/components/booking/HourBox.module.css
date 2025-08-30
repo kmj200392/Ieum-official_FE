@@ -41,20 +41,20 @@
 
 /* onHover - 버건디 */
 .hover {
-    background: #800020;
+    background: #6F3037;
     color: #FFFFFF;
-    border: 1px solid #800020;
+    border: 1px solid #6F3037;
 }
 
-/* Selected - 버건디 */
+/* Selected - 버건디-다크 (Figma 디자인) */
 .selected {
-    background: #800020;
+    background: #532228;
     color: #FFFFFF;
-    border: 1px solid #800020;
+    border: 1px solid #532228;
 }
 
 .selected:hover {
-    background: #660019;
+    background: #6F3037;
 }
 
 /* Disabled - #5c5c5c 투명도 50% */

@@ -21,33 +21,34 @@ export default function AdminLoginPage() {
         setError("");
         setLoading(true);
         try {
-            const res = await fetch("https://dev-api.kucisc.kr/api/account/login/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", accept: "application/json" },
-                body: JSON.stringify(form),
-            });
-            if (!res.ok) {
-                let message = "로그인에 실패했습니다.";
-                try { const data = await res.json(); if (typeof data?.detail === "string") message = data.detail; } catch { }
-                throw new Error(message);
-            }
-            const data = await res.json().catch(() => ({}));
-            const access = data?.access;
-            const refresh = data?.refresh;
-            if (typeof access !== "string") throw new Error("로그인 응답이 올바르지 않습니다.");
-
-            // 1) 클라이언트 토큰 저장 (accounts 페이지의 client-side fetch에 사용)
-            setTokens(access, refresh);
-            scheduleAccessTokenRefresh(access, refresh);
-
-            // 2) 서버 세션/역할 쿠키 설정 (middleware 보호용)
-            const sessRes = await fetch("/api/admin/session", {
+            // 새로운 login API 사용 (자동으로 쿠키 설정)
+            const res = await fetch("/api/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ access, refresh }),
+                body: JSON.stringify(form),
             });
-            if (!sessRes.ok) throw new Error("관리자 권한이 없습니다.");
 
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                const message = errorData?.error || "로그인에 실패했습니다.";
+                throw new Error(message);
+            }
+
+            const data = await res.json();
+            const { access, refresh } = data;
+
+                        // 클라이언트 토큰 저장 (다른 페이지의 client-side fetch에 사용)
+            setTokens(access, refresh);
+            
+            // booking 페이지 등에서 사용하는 adminToken도 저장
+            localStorage.setItem('adminToken', access);
+            
+            // refresh 토큰이 있을 때만 자동 갱신 스케줄링
+            if (refresh) {
+                scheduleAccessTokenRefresh(access, refresh);
+            }
+
+            // 로그인 성공 - admin dashboard로 이동
             router.replace("/admin/accounts");
         } catch (e) {
             setError(e?.message || "로그인에 실패했습니다.");

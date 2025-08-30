@@ -128,6 +128,76 @@ export async function userLogout() {
     clearTokens();
 }
 
+// 관리자 토큰 갱신
+export async function refreshAdminToken() {
+    const access = localStorage.getItem('adminToken') || getAccessToken();
+    const refresh = getRefreshToken();
+    if (!refresh) throw new Error("No refresh token");
+
+    const res = await fetch(REFRESH_ENDPOINT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+            Authorization: access ? `Bearer ${access}` : undefined,
+        },
+        body: JSON.stringify({ refresh }),
+    });
+
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || "Failed to refresh admin token");
+    }
+
+    const data = await res.json().catch(() => ({}));
+    const newAccess = data?.access;
+    if (typeof newAccess !== "string") throw new Error("Invalid refresh response");
+    
+    // 일반 토큰과 admin 토큰 모두 업데이트
+    setTokens(newAccess, refresh);
+    localStorage.setItem('adminToken', newAccess);
+    scheduleAccessTokenRefresh(newAccess, refresh);
+    
+    // 관리자 세션 쿠키도 업데이트
+    try {
+        await fetch("/api/admin/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access: newAccess, refresh }),
+        });
+    } catch (error) {
+        console.warn("Failed to update admin session:", error);
+    }
+    
+    return newAccess;
+}
+
+// 관리자 전용 authorizedFetch (adminToken 사용)
+export async function authorizedAdminFetch(input, init = {}) {
+    const access = localStorage.getItem('adminToken') || getAccessToken();
+    const headers = new Headers(init.headers || {});
+    if (access) headers.set("Authorization", `Bearer ${access}`);
+    let response = await fetch(input, { ...init, headers });
+
+    if (response.status === 401) {
+        // 토큰 재발급 시도
+        try {
+            const newAccess = await refreshAdminToken();
+            const retryHeaders = new Headers(init.headers || {});
+            retryHeaders.set("Authorization", `Bearer ${newAccess}`);
+            response = await fetch(input, { ...init, headers: retryHeaders });
+        } catch (error) {
+            console.error("Admin token refresh failed:", error);
+            // 갱신 실패 시 로그아웃 처리
+            clearTokens();
+            localStorage.removeItem('adminToken');
+            window.location.href = '/admin';
+            return response;
+        }
+    }
+    return response;
+}
+
 // 관리자 로그아웃
 export async function adminLogout() {
     const refresh = getRefreshToken();
@@ -139,4 +209,5 @@ export async function adminLogout() {
         });
     } catch { }
     clearTokens();
+    localStorage.removeItem('adminToken');
 } 

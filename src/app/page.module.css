@@ -1,14 +1,59 @@
-.canvas {
-  width: 1512px;
-  height: 880px;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 200px;
-}
-
 /* Header is intrinsic height based on its padding; Footer should sit at y=782 with height 200 */
 .spacer {
   flex: 1;
+}
+
+.heroRow {
+  width: 1512px;
+  margin: 0 auto;
+  padding-top: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 150px;
+}
+
+.leftGroup {
+  width: 513.5px;
+  height: 309px;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, 0.3));
+}
+
+.koTitle {
+  margin: 0;
+  font-family: 'KIMM_Bold', sans-serif;
+  font-weight: 700;
+  font-size: 65px;
+  line-height: 1.3846153846;
+  color: #FBFBFB;
+}
+
+.dividerLine {
+  width: 510px;
+  height: 0px;
+  border-top: 1px solid #FBFBFB;
+  margin: 20px 0;
+}
+
+.enTitle {
+  margin: 0;
+  font-family: 'KIMM_Light', sans-serif;
+  font-weight: 300;
+  font-size: 32.88px;
+  line-height: 1.3846153846;
+  color: #FFFFFF;
+}
+
+.rightImageBox {
+  width: 461px;
+  height: 432.91px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rightImage {
+  display: block;
 }

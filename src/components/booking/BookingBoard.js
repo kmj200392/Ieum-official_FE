@@ -10,6 +10,7 @@ export default function BookingBoard({
     selectedDayIndex = 0,
     onSelectDay,
     reservations = {},
+    reservationDetails = {},
     selectedSlots = new Set(),
     onSlotMouseDown,
     onSlotMouseEnter,
@@ -21,6 +22,11 @@ export default function BookingBoard({
     // 예약 상태 확인 함수
     const getReservationState = (dayIndex, hourIndex) => {
         return reservations[dayIndex]?.[hourIndex] || RESERVATION_STATES.AVAILABLE;
+    };
+
+    // 예약 상세 정보 확인 함수
+    const getReservationDetails = (dayIndex, hourIndex) => {
+        return reservationDetails[dayIndex]?.[hourIndex] || null;
     };
 
     // 슬롯이 선택되었는지 확인
@@ -62,6 +68,7 @@ export default function BookingBoard({
                             <div key={dayIndex} className={styles.dayColumn}>
                                 {Array.from({ length: 24 }, (_, hourIndex) => {
                                     const reservationState = getReservationState(dayIndex, hourIndex);
+                                    const reservationDetail = getReservationDetails(dayIndex, hourIndex);
                                     const isSelected = isSlotSelected(dayIndex, hourIndex);
                                     const slotKey = `${dayIndex}:${hourIndex}`;
                                     const isHovered = hoveredSlot === slotKey;
@@ -82,14 +89,12 @@ export default function BookingBoard({
                                             state={stateForBox}
                                             position={getPosition(hourIndex)}
                                             isHovered={isHovered}
+                                            purpose={reservationDetail?.purpose}
+                                            showPurpose={reservationState === RESERVATION_STATES.CONFIRMED}
                                             onMouseDown={() => onSlotMouseDown?.(dayIndex, hourIndex)}
                                             onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
                                             onMouseUp={onSlotMouseUp}
-                                        >
-                                            {reservationState === RESERVATION_STATES.CONFIRMED && (
-                                                <span className={styles.purpose}>[대관 목적]</span>
-                                            )}
-                                        </HourBox>
+                                        />
                                     );
                                 })}
                             </div>

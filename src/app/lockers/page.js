@@ -9,6 +9,7 @@ import LockerGrid from "../../components/LockerGrid";
 import LockerLegend from "../../components/LockerLegend";
 import { LockerState } from "../../components/LockerGrid";
 import styles from "./page.module.css";
+import GlassContainer from "../../components/GlassContainer";
 
 export default function LockersPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -109,7 +110,7 @@ export default function LockersPage() {
                         <br />
                         본인 인증 후 신청을 진행해 주세요.
                     </p>
-                    <form className={styles.glassContainer} onSubmit={handleLogin}>
+                    <GlassContainer as="form" radius={50} padding={50} variant="container" onSubmit={handleLogin} className={styles.glassContainer}>
                         <div className={styles.inputField}>
                             <InputField
                                 id="username"
@@ -132,11 +133,10 @@ export default function LockersPage() {
                                 value={formData.password}
                                 onChange={handleInputChange}
                                 required
-                                error={loginError}
                             />
                         </div>
-                        <button type="submit" className={styles.loginButton}>신청하러 가기</button>
-                    </form>
+                        <button type="submit" className={styles.loginButton}>로그인</button>
+                    </GlassContainer>
                 </main>
                 <Footer />
             </div>

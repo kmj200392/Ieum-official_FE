@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/OnboardingFooter";
 import InputField from "../../components/InputField";
 import styles from "./page.module.css";
-import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens } from "../../utils/auth";
+import GlassContainer from "../../components/GlassContainer";
+import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens, authorizedFetch } from "../../utils/auth";
 import BookingBoard from "../../components/booking/BookingBoard";
 
 export default function BookingPage() {
@@ -58,6 +60,23 @@ export default function BookingPage() {
     const [requestError, setRequestError] = useState("");
     const [userInfoLoading, setUserInfoLoading] = useState(false);
 
+    // 사이드바와 동일한 배경 blur를 위해 포털 루트와 body 클래스 토글 추가
+    const [portalEl, setPortalEl] = useState(null);
+    useEffect(() => {
+        if (typeof document === "undefined") return;
+        setPortalEl(document.getElementById("portal-root"));
+    }, []);
+
+    useEffect(() => {
+        if (typeof document === "undefined") return;
+        if (isRequestModalOpen) {
+            document.body.classList.add("sidebar-open");
+        } else {
+            document.body.classList.remove("sidebar-open");
+        }
+        return () => document.body.classList.remove("sidebar-open");
+    }, [isRequestModalOpen]);
+
     // 일주일 날짜 계산 함수
     const calculateWeekDates = (weekStart) => {
         const weekDates = [];
@@ -108,6 +127,7 @@ export default function BookingPage() {
 
     // 예약 데이터 (API에서 가져올 데이터)
     const [reservations, setReservations] = useState({});
+    const [reservationDetails, setReservationDetails] = useState({}); // purpose 등 상세 정보
     const [reservationsLoading, setReservationsLoading] = useState(false);
 
     // 선택된 슬롯들 관리
@@ -464,11 +484,6 @@ export default function BookingPage() {
 
         setReservationsLoading(true);
         try {
-            const access = getAccessToken();
-            if (!access) {
-                console.warn("토큰이 없어서 예약 목록을 가져올 수 없습니다.");
-                return;
-            }
 
             // 주차의 시작/끝 날짜를 한국 시간대(+09:00) 문자열로 변환
             const formatToKoreanTime = (date) => {
@@ -483,13 +498,12 @@ export default function BookingPage() {
             const startDateString = formatToKoreanTime(startDate);
             const endDateString = formatToKoreanTime(endDate);
 
-            const response = await fetch(
+            const response = await authorizedFetch(
                 `https://dev-api.kucisc.kr/api/room/overview/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
                 {
                     method: 'GET',
                     headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${access}`
+                        'Accept': 'application/json'
                     }
                 }
             );
@@ -503,6 +517,7 @@ export default function BookingPage() {
 
             // API 응답을 reservations 객체 형태로 변환
             const newReservations = {};
+            const newReservationDetails = {}; // purpose 등 상세 정보 저장
 
             reservationData.forEach(reservation => {
                 const startTime = new Date(reservation.start_time);
@@ -521,6 +536,9 @@ export default function BookingPage() {
                         if (!newReservations[dayIndex]) {
                             newReservations[dayIndex] = {};
                         }
+                        if (!newReservationDetails[dayIndex]) {
+                            newReservationDetails[dayIndex] = {};
+                        }
 
                         // 상태 매핑: API의 status를 우리 시스템의 상태로 변환
                         let status;
@@ -528,7 +546,7 @@ export default function BookingPage() {
                             case 'PENDING':
                                 status = RESERVATION_STATES.PENDING;
                                 break;
-                            case 'CONFIRMED':
+                            case 'APPROVED':
                                 status = RESERVATION_STATES.CONFIRMED;
                                 break;
                             case 'REJECTED':
@@ -541,6 +559,13 @@ export default function BookingPage() {
 
                         newReservations[dayIndex][hour] = status;
 
+                        // 예약 상세 정보 저장
+                        newReservationDetails[dayIndex][hour] = {
+                            purpose: reservation.purpose || '',
+                            organization_name: reservation.organization_name || '',
+                            status: reservation.status
+                        };
+
                         // 다음 시간으로 이동
                         currentTime.setHours(currentTime.getHours() + 1);
                     }
@@ -548,6 +573,7 @@ export default function BookingPage() {
             });
 
             setReservations(newReservations);
+            setReservationDetails(newReservationDetails);
 
         } catch (error) {
             console.error("예약 목록 조회 오류:", error);
@@ -574,17 +600,11 @@ export default function BookingPage() {
 
         setUserInfoLoading(true);
         try {
-            const access = getAccessToken();
-            if (!access) {
-                console.warn("토큰이 없어서 사용자 정보를 가져올 수 없습니다.");
-                return;
-            }
 
-            const response = await fetch('https://dev-api.kucisc.kr/api/account/me/', {
+            const response = await authorizedFetch('https://dev-api.kucisc.kr/api/account/me/', {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${access}`
+                    'Accept': 'application/json'
                 }
             });
 
@@ -630,10 +650,6 @@ export default function BookingPage() {
         setRequestError("");
 
         try {
-            const access = getAccessToken();
-            if (!access) {
-                throw new Error("로그인이 필요합니다.");
-            }
 
             const requestBody = {
                 purpose: requestPurpose,
@@ -644,12 +660,11 @@ export default function BookingPage() {
 
             console.log('대관 신청 요청:', requestBody);
 
-            const response = await fetch('https://dev-api.kucisc.kr/api/room/reserve/', {
+            const response = await authorizedFetch('https://dev-api.kucisc.kr/api/room/reserve/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${access}`
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(requestBody)
             });
@@ -943,7 +958,7 @@ export default function BookingPage() {
                         정보대학 동아리연합회 소속 동아리,<br />
                         정보대학 산하기구 소속 소모임만 가능합니다.
                     </p>
-                    <form className={styles.glassContainer} onSubmit={handleLogin}>
+                    <GlassContainer as="form" radius={50} padding={50} variant="container" onSubmit={handleLogin} className={styles.glassContainer}>
                         <div className={styles.inputField}>
                             <InputField
                                 id="username"
@@ -976,7 +991,7 @@ export default function BookingPage() {
                             />
                         </div>
                         <button type="submit" className={styles.loginButton} disabled={loading}>{loading ? "로그인 중..." : "로그인"}</button>
-                    </form>
+                    </GlassContainer>
                 </main>
                 <Footer />
             </div>
@@ -1029,6 +1044,7 @@ export default function BookingPage() {
                                     selectedDayIndex={selectedDayIndex}
                                     onSelectDay={setSelectedDayIndex}
                                     reservations={reservations}
+                                    reservationDetails={reservationDetails}
                                     selectedSlots={selectedSlots}
                                     onSlotMouseDown={handleMouseDown}
                                     onSlotMouseEnter={handleMouseEnter}
@@ -1059,79 +1075,109 @@ export default function BookingPage() {
                 </div>
             </main>
 
-            {/* 대관 신청하기 버튼 */}
-            <button
-                className={`${styles.bookingButton} ${selectedSlots.size === 0 ? styles.disabled : ''}`}
-                onClick={() => {
-                    if (selectedSlots.size === 0) return;
-                    setIsRequestModalOpen(true);
-                    setRequestError(""); // 모달 열 때 에러 초기화
-                    fetchUserInfo(); // 사용자 정보 가져오기
-                }}
-                disabled={selectedSlots.size === 0}
-            >
-                대관 신청하기
-            </button>
+            {/* 대관 신청하기 버튼 - 선택된 시간이 있을 때만 표시 */}
+            {selectedSlots.size > 0 && (
+                <button
+                    className={styles.bookingButton}
+                    onClick={() => {
+                        setIsRequestModalOpen(true);
+                        setRequestError(""); // 모달 열 때 에러 초기화
+                        fetchUserInfo(); // 사용자 정보 가져오기
+                    }}
+                >
+                    대관 신청하기
+                </button>
+            )}
 
-            {/* 대관 신청 모달 */}
-            {isRequestModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modal}>
-                        <h2 className={styles.modalTitle}>대관 신청</h2>
-                        <div className={styles.modalBody}>
-                            <div className={styles.formGroup}>
-                                <label>대관 시작 시간</label>
-                                <input type="text" placeholder={startLabel} disabled />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label>대관 종료 시간</label>
-                                <input type="text" placeholder={endLabel} disabled />
-                            </div>
-                            {requestOrganization && (
-                                <div className={styles.formGroup}>
-                                    <label>단체명</label>
+            {/* 대관 신청 모달 - 사이드바와 동일한 방식으로 blur 효과 적용 */}
+            {portalEl && createPortal(
+                <div
+                    className={`${styles.modalOverlay} ${isRequestModalOpen ? styles.active : ''}`}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsRequestModalOpen(false);
+                            setRequestError("");
+                            setRequestOrganization("");
+                        }
+                    }}
+                >
+                    <GlassContainer radius={50} padding={50} variant="modal" className={styles.glassModal}>
+                        <h2 className={styles.glassModalTitle}>대관 신청</h2>
+
+                        <div className={styles.glassModalBody}>
+                            {/* 시간 입력 필드들 - 가로 배치 */}
+                            <div className={styles.timeFieldsGroup}>
+                                <div className={styles.timeField}>
+                                    <label className={styles.fieldLabel}>대관 시작 시간</label>
                                     <input
                                         type="text"
-                                        placeholder="단체명"
+                                        value={startLabel}
+                                        disabled
+                                        className={styles.disabledTimeInput}
+                                    />
+                                </div>
+                                <div className={styles.timeField}>
+                                    <label className={styles.fieldLabel}>대관 종료 시간</label>
+                                    <input
+                                        type="text"
+                                        value={endLabel}
+                                        disabled
+                                        className={styles.disabledTimeInput}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* 단체명 필드 */}
+                            {requestOrganization && (
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>단체명</label>
+                                    <input
+                                        type="text"
                                         value={requestOrganization}
-                                        disabled={true}
+                                        disabled
                                         className={styles.disabledInput}
                                     />
-                                    <small className={styles.helperText}>
-                                        현재 계정으로 신청됩니다
-                                    </small>
                                 </div>
                             )}
-                            <div className={styles.formGroup}>
-                                <label>대관 목적</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    placeholder="대관 목적을 입력해 주세요"
+
+                            {/* 대관 목적 필드 */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>대관 목적</label>
+                                <input
+                                    type="text"
+                                    placeholder="인공지능학과 제 5차 집행위원회"
                                     value={requestPurpose}
                                     onChange={(e) => setRequestPurpose(e.target.value)}
+                                    className={styles.activeInput}
                                 />
                             </div>
-                            <div className={styles.formGroup}>
-                                <label>이메일</label>
+
+                            {/* 이메일 필드 */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>이메일 (알림 목적)</label>
                                 <input
                                     type="email"
-                                    placeholder="example@korea.ac.kr"
+                                    placeholder="sample@email.com"
                                     value={requestEmail}
                                     onChange={(e) => setRequestEmail(e.target.value)}
+                                    className={styles.activeInput}
                                 />
                                 {!isEmailValid && requestEmail.length > 0 && (
-                                    <span className={styles.helperText}>올바른 이메일 형식이 아닙니다.</span>
+                                    <span className={styles.errorText}>올바른 이메일 형식이 아닙니다.</span>
                                 )}
                             </div>
                         </div>
+
                         {requestError && (
                             <div className={styles.errorMessage}>
                                 {requestError}
                             </div>
                         )}
-                        <div className={styles.modalActions}>
+
+                        {/* 버튼 그룹 */}
+                        <div className={styles.glassModalActions}>
                             <button
-                                className={styles.secondaryButton}
+                                className={styles.cancelButton}
                                 onClick={() => {
                                     setIsRequestModalOpen(false);
                                     setRequestError("");
@@ -1141,15 +1187,16 @@ export default function BookingPage() {
                                 취소
                             </button>
                             <button
-                                className={styles.primaryButton}
+                                className={styles.submitButton}
                                 disabled={!isFormValid || requestLoading}
                                 onClick={handleReservationSubmit}
                             >
                                 {requestLoading ? "신청 중..." : "대관 신청하기"}
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </GlassContainer>
+                </div>,
+                portalEl
             )}
 
             <Footer />

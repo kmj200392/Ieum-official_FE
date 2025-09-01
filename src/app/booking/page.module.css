@@ -43,24 +43,22 @@
 .glassContainer {
     width: 414px;
     margin: 0 auto;
-    padding: 50px 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 35px;
     border-radius: 50px;
-    background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.15) 100%);
-    border: none;
-    border-image: none;
-    backdrop-filter: blur(42px);
+    position: relative;
 }
+
 
 .inputField {
     width: 241px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-left: 86px;
-    /* center within 414px with 241 width: (414-241)/2 */
+    margin: 0 auto;
+    /* center within 414px */
 }
 
 .inputField label {
@@ -87,7 +85,7 @@
 
 .loginButton {
     width: 241px;
-    margin-left: 86px;
+    margin: 0 auto;
     /* center align with inputs */
     background: #2C2C2C;
     color: #FFFFFF;
@@ -132,131 +130,300 @@
     line-height: 1.4;
 }
 
-/* 대관 신청하기 버튼 */
+/* 대관 신청하기 버튼 - Figma 디자인과 완전히 동일하게 적용 */
 .bookingButton {
     position: fixed;
     bottom: 120px;
     right: 20px;
-    background: #000000;
-    color: #ffffff;
+    background: #FBFBFB;
+    color: #2C2C2C;
     border: none;
-    padding: 1rem 2rem;
-    font-size: 1.5rem;
-    font-weight: 400;
-    border-radius: 8px;
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: 'Pretendard', sans-serif;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     z-index: 100;
-    width: 241px;
-    height: 80px;
+    min-width: 200px;
+    height: auto;
+    line-height: 1.193359375em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: slideInUp 0.3s ease-out;
+    box-shadow: 0 2px 8px rgba(44, 44, 44, 0.1);
 }
 
 .bookingButton:hover {
-    background: #333333;
+    background: #F0F0F0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 44, 44, 0.15);
 }
 
-.bookingButton:disabled,
-.bookingButton.disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-    opacity: 0.6;
+.bookingButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(44, 44, 44, 0.1);
+    background: #E8E8E8;
 }
 
-.bookingButton:disabled:hover,
-.bookingButton.disabled:hover {
-    background: #cccccc;
+/* 버튼 등장 애니메이션 */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* 모달 */
+
+
+/* 모달 - 사이드바와 완전히 동일한 방식으로 blur 효과 적용 */
 .modalOverlay {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
 }
 
-.modal {
-    background: #ffffff;
-    width: 90%;
-    max-width: 560px;
-    border-radius: 12px;
-    padding: 24px;
+.modalOverlay.active {
+    opacity: 1;
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
 }
 
-.modalTitle {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #000;
-}
-
-.modalBody {
+.glassModal {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 50px;
+    border-radius: 50px;
+    position: relative;
+    min-width: fit-content;
+    max-width: 90vw;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.25s ease;
 }
 
-.formGroup {
+
+.modalOverlay.active .glassModal {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.glassModalTitle {
+    font-family: 'KIMM_Bold', 'Pretendard', sans-serif;
+    font-weight: 700;
+    font-size: 35px;
+    line-height: 1.05em;
+    text-align: center;
+    color: #000000;
+    margin: 0;
+    width: 100%;
+}
+
+.glassModalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 330px;
+}
+
+/* 시간 필드 가로 배치 */
+.timeFieldsGroup {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+}
+
+.timeField {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex: 1;
 }
 
-.formGroup label {
-    font-size: 1rem;
-    color: #000;
-}
-
-.formGroup input,
-.textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
-.textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.helperText {
-    font-size: 0.875rem;
-    color: #A40732;
-}
-
-.modalActions {
-    margin-top: 20px;
+.fieldGroup {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
 }
 
-.primaryButton {
-    background: #000;
-    color: #fff;
+.fieldLabel {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1em;
+    text-align: left;
+    color: #2C2C2C;
+    margin: 0;
+}
+
+/* Disabled 입력 필드 (시간, 단체명) */
+.disabledTimeInput {
+    width: 150px;
+    height: 40px;
     padding: 12px 16px;
-    border: none;
+    background: #E4E4E4;
+    border: 1px solid #B2B2B2;
     border-radius: 8px;
-    cursor: pointer;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.4em;
+    color: #B3B3B3;
+    box-sizing: border-box;
 }
 
-.primaryButton:disabled {
+.disabledInput {
+    width: 100%;
+    height: 40px;
+    padding: 12px 16px;
+    background: #E4E4E4;
+    border: 1px solid #B2B2B2;
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.4em;
+    color: #B3B3B3;
+    box-sizing: border-box;
+}
+
+/* Active 입력 필드 (대관 목적, 이메일) */
+.activeInput {
+    width: 100%;
+    height: 40px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.4em;
+    color: #C0C0C0;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.activeInput:focus {
+    outline: none;
+    border-color: #6F3037;
+    color: #2C2C2C;
+}
+
+.activeInput::placeholder {
+    color: #C0C0C0;
+}
+
+.errorText {
+    font-size: 14px;
+    color: #A40732;
+    margin-top: 4px;
+}
+
+.errorMessage {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* 버튼 그룹 */
+.glassModalActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 17px;
+    width: 100%;
+}
+
+.cancelButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 30px;
+    width: 170px;
+    background: #5C5C5C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.193359375em;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+    background: #4A4A4A;
+    transform: translateY(-1px);
+}
+
+.submitButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 30px;
+    width: 170px;
+    background: #6F3037;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.193359375em;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submitButton:hover {
+    background: #532228;
+    transform: translateY(-1px);
+}
+
+.submitButton:disabled {
     background: #cccccc;
     cursor: not-allowed;
+    transform: none;
 }
 
-.secondaryButton {
-    background: #D9D9D9;
-    color: #000;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.submitButton:disabled:hover {
+    background: #cccccc;
+    transform: none;
 }
 
 

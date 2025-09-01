@@ -19,7 +19,9 @@ export default function HourBox({
     onMouseEnter,
     onMouseUp,
     position = "middle", // "first", "last", "middle"
-    isHovered = false
+    isHovered = false,
+    purpose = "",
+    showPurpose = false
 }) {
     const getPositionClass = () => {
         switch (position) {
@@ -41,7 +43,13 @@ export default function HourBox({
             onMouseEnter={onMouseEnter}
             onMouseUp={onMouseUp}
         >
-            {children}
+            {showPurpose && purpose ? (
+                <div className={styles.purposeText}>
+                    {purpose}
+                </div>
+            ) : (
+                children
+            )}
         </div>
     );
 } 

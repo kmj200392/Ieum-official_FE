@@ -1027,9 +1027,9 @@ export default function BookingPage() {
                         <div className={styles.centerGroup}>
                             {/* 시간 컬럼 */}
                             <div className={styles.timeColumn}>
-                                {Array.from({ length: 24 }, (_, i) => (
+                                {Array.from({ length: 25 }, (_, i) => (
                                     <div key={i} className={styles.timeLabel}>
-                                        {i === 0 ? "12AM" : i === 12 ? "12PM" : i > 12 ? `${i - 12}PM` : `${i}AM`}
+                                        {i === 0 ? "00:00" : i === 12 ? "12:00" : i > 12 ? `${i - 12}:00` : `${i}:00`}
                                     </div>
                                 ))}
                             </div>
@@ -1068,8 +1068,8 @@ export default function BookingPage() {
 
                     <div className={styles.infoSection}>
                         <p className={styles.infoText}>
-                            참고: 24시간 중 최대 5시간 (연속) 예약 가능, 그 이상 대관 원할 시 학생회에 문의<br />
-                            업무 시간: 10:00 ~ 18:00
+                            ⚠️ 참고: 24시간 중 최대 5시간 (연속) 예약 가능, 그 이상 대관 원할 시 학생회에 문의<br />
+                            🕐 업무 시간: 10:00 ~ 18:00
                         </p>
                     </div>
                 </div>

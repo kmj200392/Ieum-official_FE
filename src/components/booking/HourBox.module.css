@@ -1,5 +1,6 @@
 .box {
-    height: 48px;
+    height: 40px;
+    width: 144px;
     border: none;
     display: flex;
     align-items: center;

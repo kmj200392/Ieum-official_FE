@@ -1,11 +1,18 @@
 .header {
-  width: 1512px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 50px 75px 20px;
+    width: 100%;
+    max-width: 1512px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 50px 75px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    z-index: 1000;
 }
 
 .leftGroup {
@@ -40,11 +47,11 @@
 }
 
 .iconBox {
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .instagramIcon {

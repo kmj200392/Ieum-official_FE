@@ -621,6 +621,17 @@
 
 }
 
+/* 헤더 고정 보정: 페이지 상단 여백 */
+.main {
+    padding-top: 180px;
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding-top: 120px;
+    }
+}
+
 /* 에러 메시지 스타일 */
 .errorMessage {
     background: rgba(220, 53, 69, 0.1);

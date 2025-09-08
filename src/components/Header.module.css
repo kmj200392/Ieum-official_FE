@@ -1,6 +1,7 @@
 /* Header (wireframe minimal) */
 .header {
-    width: 1512px;
+    width: 100%;
+    max-width: 1512px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -8,6 +9,12 @@
     gap: 10px;
     padding: 50px 75px 20px;
     background: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    z-index: 1000;
 }
 
 .headerContent {

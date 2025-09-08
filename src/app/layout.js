@@ -59,6 +59,12 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           type="text/css"
         />
+        <link
+          rel="preload"
+          as="font"
+          href="/font/Pak_Yong_jun.ttf"
+          type="font/ttf"
+        />
       </head>
       <body className={inter.variable}>
         <div className="appRoot">

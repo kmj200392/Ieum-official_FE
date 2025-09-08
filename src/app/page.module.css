@@ -4,13 +4,31 @@
 }
 
 .heroRow {
-  width: 1512px;
+  width: 100%;
+  max-width: 1512px;
   margin: 0 auto;
-  padding-top: 150px;
+  padding-top: 275px;
+  padding-left: 194px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 150px;
+}
+
+.chevronBtn {
+  position: absolute;
+  top: 895px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.chevronBtn svg {
+  display: block;
 }
 
 .leftGroup {
@@ -56,4 +74,508 @@
 
 .rightImage {
   display: block;
+}
+
+/* Snap canvas and sections */
+.canvas {
+  width: 100%;
+  max-width: 1512px;
+  margin: 0 auto;
+  height: 100vh;
+  overflow-y: auto;
+  /* remove CSS snap; JS controls snapping */
+  scroll-behavior: auto;
+  overscroll-behavior: contain;
+  overflow-x: hidden;
+  /* hide scrollbars */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.canvas::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.canvas::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.canvas::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.snapSection {
+  width: 100%;
+  max-width: 1512px;
+  height: 982px;
+  margin: 0 auto;
+  /* remove centering to respect Figma offsets */
+  display: block;
+  position: relative;
+}
+
+/* Section 1 just uses existing .heroRow inside .snapSection */
+
+/* Section 2: About glass card */
+.aboutWrap {
+  width: 825px;
+  position: absolute;
+  top: 493px;
+  /* 166 + 231.63 + 45 + 50 padding */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 45px;
+}
+
+.aboutSymbol {
+  position: absolute;
+  top: 166px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 239px;
+  height: 231.63px;
+}
+
+.aboutCard {
+  display: contents;
+}
+
+.aboutVectors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 239px;
+  height: 231.63px;
+}
+
+.aboutDivider {
+  width: 468px;
+  height: 0px;
+  border-top: 1px solid #FBFBFB;
+  margin: 0 auto;
+}
+
+.aboutTitle {
+  font-family: 'Pak_Yong_jun', 'Pretendard', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal;
+  font-size: 51.8876px;
+  line-height: 1.2966;
+  letter-spacing: 0;
+  color: #FBFBFB;
+  text-align: center;
+  margin: 0 0 0;
+  font-synthesis-weight: none;
+  font-synthesis-style: none;
+}
+
+.aboutBody {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400 !important;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1.8551;
+  letter-spacing: 0;
+  color: #FBFBFB;
+  text-align: center;
+  font-synthesis-weight: none;
+  font-synthesis-style: none;
+}
+
+.aboutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 30px;
+  border: 2px solid #FFFFFF;
+  border-radius: 10px;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  background: transparent;
+  margin: 20px auto 0;
+}
+
+/* Section 3: Visit title */
+.visitTitle {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 285px;
+  height: 68px;
+  font-family: 'KIMM_Bold', sans-serif;
+  font-weight: 700;
+  font-size: 65px;
+  line-height: 1.05;
+  color: #6F3037;
+  text-align: center;
+  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Last section snaps to end to reveal bottom fully */
+.snapSectionLast {
+  scroll-snap-align: end;
+}
+
+/* Carousel section: 1512x982 canvas, content starts at y=173 with 60px header gap */
+.carouselSection {
+  width: 100%;
+  max-width: 1512px;
+  height: 982px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 173px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carouselHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.carouselTitle {
+  font-family: 'KIMM_Bold', sans-serif;
+  font-weight: 700;
+  font-size: 65px;
+  line-height: 1.05;
+  color: #6F3037;
+  text-align: center;
+  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.carouselSubtitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.6666666667;
+  color: #6F3037;
+  text-align: center;
+}
+
+.carouselRow {
+  position: relative;
+  width: 1105px;
+  /* viewport width */
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Arrow buttons identical to Booking */
+.weekNavigationButton {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #6F3037;
+  color: #FBFBFB;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: calc(50% + 4px);
+  margin-top: -24px;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+  --nav-arrow-stroke: 2px;
+}
+
+.weekNavigationButton:first-of-type {
+  left: -72px;
+}
+
+.weekNavigationButton:last-of-type {
+  right: -72px;
+}
+
+.weekNavigationButton:hover {
+  background: #532228;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.weekNavigationButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  background: #6F3037;
+}
+
+.weekNavigationButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(111, 48, 55, 0.25), 0 2px 10px rgba(0, 0, 0, 0.10);
+}
+
+.weekNavigationButton svg {
+  width: 14px;
+  height: 24px;
+}
+
+.weekNavigationButton svg path {
+  stroke: currentColor;
+  stroke-width: var(--nav-arrow-stroke);
+  vector-effect: non-scaling-stroke;
+}
+
+.weekNavigationButton:first-of-type svg {
+  transform: translateX(-3px);
+}
+
+.weekNavigationButton:last-of-type svg {
+  transform: translateX(3px);
+}
+
+/* Center CTA */
+.carouselCta {
+  margin-top: 40px;
+}
+
+.carouselArrowBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #6F3037;
+  border: none;
+  cursor: pointer;
+}
+
+.carouselViewport {
+  width: 1105px;
+  /* 4*250 + 3*35 = 1105 */
+  overflow: hidden;
+}
+
+.carouselTrack {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 250px;
+  column-gap: 35px;
+  transform: translateX(0);
+  transition: transform 0.4s ease;
+}
+
+.carouselCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 250px;
+  box-sizing: border-box;
+}
+
+.carouselImageBox {
+  width: 250px;
+  height: 312.5px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(42px);
+  box-sizing: border-box;
+}
+
+.carouselImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carouselCardTitle {
+  width: 250px;
+  text-align: center;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1933;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carouselCardCaption {
+  width: 250px;
+  text-align: center;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 200;
+  font-size: 20px;
+  line-height: 1.1933;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carouselCta {
+  margin-top: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 30px;
+  border: 2px solid #FFFFFF;
+  border-radius: 10px;
+  color: #FFFFFF;
+  background: transparent;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+/* Clubs carousel section */
+.clubsSection {
+  width: 100%;
+  max-width: 1512px;
+  height: 982px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 173px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.clubsHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.clubsTitle {
+  font-family: 'KIMM_Bold', sans-serif;
+  font-weight: 700;
+  font-size: 65px;
+  line-height: 1.05;
+  color: #6F3037;
+  text-align: center;
+  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.clubsSubtitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.6667;
+  color: #6F3037;
+  text-align: center;
+}
+
+.clubsRow {
+  position: relative;
+  width: 1105px;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clubsViewport {
+  width: 1105px;
+  overflow: hidden;
+}
+
+.clubsTrack {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 250px;
+  column-gap: 35px;
+  transform: translateX(0);
+  transition: transform 0.4s ease;
+}
+
+.clubCard {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.clubGlass {
+  width: 250px;
+  height: 250px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoBox {
+  width: 180px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.clubName {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.1933;
+  color: #FFFFFF;
+  text-align: center;
+  white-space: nowrap;
+  width: 250px;
+}
+
+.clubDesc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 200;
+  font-size: 20px;
+  line-height: 1.1933;
+  color: #FFFFFF;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 250px;
+}
+
+/* 반응형: Booking과 동일한 화살표 버튼 스케일링 */
+@media (max-width: 768px) {
+  .weekNavigationButton {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    top: calc(50% + 4px);
+    margin-top: -18px;
+  }
+
+  .weekNavigationButton:first-of-type {
+    left: -56px;
+  }
+
+  .weekNavigationButton:last-of-type {
+    right: -56px;
+  }
 }

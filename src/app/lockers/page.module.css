@@ -13,6 +13,17 @@
     padding: 0;
 }
 
+/* 헤더 고정 보정: 페이지 상단 여백 */
+.main {
+    padding-top: 180px;
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding-top: 120px;
+    }
+}
+
 /* 로그인 제목/부제 */
 .title {
     font-family: 'KIMM_Light', 'Pretendard', sans-serif;

@@ -126,14 +126,129 @@ export default function BookingPage() {
         setCurrentWeekStart(newWeekStart);
     };
 
+
+
     useEffect(() => {
         const weekDates = calculateWeekDates(currentWeekStart);
         setWeekDates(weekDates);
 
+        // 주차의 시작/끝 날짜 계산
+        const getWeekDateRange = (weekStart) => {
+            const sunday = new Date(weekStart);
+            sunday.setDate(weekStart.getDate() - weekStart.getDay());
+            sunday.setHours(0, 0, 0, 0);
+
+            const nextSunday = new Date(sunday);
+            nextSunday.setDate(sunday.getDate() + 7);
+
+            return { start: sunday, end: nextSunday };
+        };
+
+        // 예약 목록 API 호출 함수
+        const fetchReservations = async (startDate, endDate) => {
+            setReservationsLoading(true);
+            try {
+                // 주차의 시작/끝 날짜를 한국 시간대(+09:00) 문자열로 변환
+                const formatToKoreanTime = (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
+                };
+                const startDateString = formatToKoreanTime(startDate);
+                const endDateString = formatToKoreanTime(endDate);
+
+                const response = await fetch(
+                    `https://dev-api.kucisc.kr/api/room/overview/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    console.warn("예약 목록을 가져오는데 실패했습니다:", response.status);
+                    return;
+                }
+
+                const reservationData = await response.json();
+
+                // API 응답을 reservations 객체 형태로 변환
+                const newReservations = {};
+                const newReservationDetails = {}; // purpose 등 상세 정보 저장
+
+                reservationData.forEach(reservation => {
+                    const startTime = new Date(reservation.start_time);
+                    const endTime = new Date(reservation.end_time);
+
+                    // 예약이 현재 주차에 속하는지 확인
+                    if (startTime >= startDate && startTime < endDate) {
+                        // 요일 계산 (일요일 = 0)
+                        const dayIndex = startTime.getDay();
+
+                        // 시작 시간부터 끝 시간까지의 모든 시간대 표시
+                        let currentTime = new Date(startTime);
+                        while (currentTime < endTime) {
+                            const hour = currentTime.getHours();
+
+                            if (!newReservations[dayIndex]) {
+                                newReservations[dayIndex] = {};
+                            }
+                            if (!newReservationDetails[dayIndex]) {
+                                newReservationDetails[dayIndex] = {};
+                            }
+
+                            // 상태 매핑: API의 status를 우리 시스템의 상태로 변환
+                            let status;
+                            switch (reservation.status) {
+                                case 'PENDING':
+                                    status = RESERVATION_STATES.PENDING;
+                                    break;
+                                case 'APPROVED':
+                                    status = RESERVATION_STATES.CONFIRMED;
+                                    break;
+                                case 'REJECTED':
+                                case 'CANCELLED':
+                                    status = RESERVATION_STATES.DISABLED;
+                                    break;
+                                default:
+                                    status = RESERVATION_STATES.PENDING;
+                            }
+
+                            newReservations[dayIndex][hour] = status;
+
+                            // 예약 상세 정보 저장
+                            newReservationDetails[dayIndex][hour] = {
+                                purpose: reservation.purpose || '',
+                                organization_name: reservation.organization_name || '',
+                                status: reservation.status
+                            };
+
+                            // 다음 시간으로 이동
+                            currentTime.setHours(currentTime.getHours() + 1);
+                        }
+                    }
+                });
+
+                setReservations(newReservations);
+                setReservationDetails(newReservationDetails);
+
+            } catch (error) {
+                console.error("예약 목록 조회 오류:", error);
+            } finally {
+                setReservationsLoading(false);
+            }
+        };
+
         // 주차가 변경될 때마다 예약 목록 다시 가져오기
         const { start, end } = getWeekDateRange(currentWeekStart);
         fetchReservations(start, end);
-    }, [currentWeekStart, fetchReservations]);
+    }, [currentWeekStart]);
 
     // 예약 데이터 (API에서 가져올 데이터)
     const [reservations, setReservations] = useState({});
@@ -501,120 +616,6 @@ export default function BookingPage() {
             startTime: formatToKoreanTime(startDate),
             endTime: formatToKoreanTime(endDate)
         };
-    };
-
-    // 예약 목록 API 호출
-    const fetchReservations = useCallback(async (startDate, endDate) => {
-        setReservationsLoading(true);
-        try {
-
-            // 주차의 시작/끝 날짜를 한국 시간대(+09:00) 문자열로 변환
-            const formatToKoreanTime = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
-                return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
-            };
-            const startDateString = formatToKoreanTime(startDate);
-            const endDateString = formatToKoreanTime(endDate);
-
-            const response = await fetch(
-                `https://dev-api.kucisc.kr/api/room/overview/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                }
-            );
-
-            if (!response.ok) {
-                console.warn("예약 목록을 가져오는데 실패했습니다:", response.status);
-                return;
-            }
-
-            const reservationData = await response.json();
-
-            // API 응답을 reservations 객체 형태로 변환
-            const newReservations = {};
-            const newReservationDetails = {}; // purpose 등 상세 정보 저장
-
-            reservationData.forEach(reservation => {
-                const startTime = new Date(reservation.start_time);
-                const endTime = new Date(reservation.end_time);
-
-                // 예약이 현재 주차에 속하는지 확인
-                if (startTime >= startDate && startTime < endDate) {
-                    // 요일 계산 (일요일 = 0)
-                    const dayIndex = startTime.getDay();
-
-                    // 시작 시간부터 끝 시간까지의 모든 시간대 표시
-                    let currentTime = new Date(startTime);
-                    while (currentTime < endTime) {
-                        const hour = currentTime.getHours();
-
-                        if (!newReservations[dayIndex]) {
-                            newReservations[dayIndex] = {};
-                        }
-                        if (!newReservationDetails[dayIndex]) {
-                            newReservationDetails[dayIndex] = {};
-                        }
-
-                        // 상태 매핑: API의 status를 우리 시스템의 상태로 변환
-                        let status;
-                        switch (reservation.status) {
-                            case 'PENDING':
-                                status = RESERVATION_STATES.PENDING;
-                                break;
-                            case 'APPROVED':
-                                status = RESERVATION_STATES.CONFIRMED;
-                                break;
-                            case 'REJECTED':
-                            case 'CANCELLED':
-                                status = RESERVATION_STATES.DISABLED;
-                                break;
-                            default:
-                                status = RESERVATION_STATES.PENDING;
-                        }
-
-                        newReservations[dayIndex][hour] = status;
-
-                        // 예약 상세 정보 저장
-                        newReservationDetails[dayIndex][hour] = {
-                            purpose: reservation.purpose || '',
-                            organization_name: reservation.organization_name || '',
-                            status: reservation.status
-                        };
-
-                        // 다음 시간으로 이동
-                        currentTime.setHours(currentTime.getHours() + 1);
-                    }
-                }
-            });
-
-            setReservations(newReservations);
-            setReservationDetails(newReservationDetails);
-
-        } catch (error) {
-            console.error("예약 목록 조회 오류:", error);
-        } finally {
-            setReservationsLoading(false);
-        }
-    }, []);
-
-    // 주차의 시작/끝 날짜 계산
-    const getWeekDateRange = (weekStart) => {
-        const sunday = new Date(weekStart);
-        sunday.setDate(weekStart.getDate() - weekStart.getDay());
-        sunday.setHours(0, 0, 0, 0);
-
-        const nextSunday = new Date(sunday);
-        nextSunday.setDate(sunday.getDate() + 7);
-
-        return { start: sunday, end: nextSunday };
     };
 
     // 사용자 정보를 가져와서 메모리에 저장

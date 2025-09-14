@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import styles from "./layout.module.css";
 import { adminLogout } from "@/utils/auth";
@@ -24,7 +25,7 @@ export default function AdminDashboardLayout({ children }) {
         <div className={styles.wrapper}>
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
-                    <a href="/" className={styles.logoLink} aria-label="메인으로">
+                    <Link href="/" className={styles.logoLink} aria-label="메인으로">
                         <Image
                             src="/방패 로고.png"
                             alt="고려대학교 정보대학 로고"
@@ -32,7 +33,7 @@ export default function AdminDashboardLayout({ children }) {
                             height={40}
                             className={styles.logoImage}
                         />
-                    </a>
+                    </Link>
                 </div>
                 <nav className={styles.nav}>
                     <a href="/admin/accounts" className={`${styles.navItem} ${pathname === "/admin/accounts" ? styles.active : ""}`}>계정관리</a>

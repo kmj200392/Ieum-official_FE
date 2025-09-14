@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/OnboardingFooter";
@@ -55,7 +55,6 @@ export default function BookingPage() {
             }
         };
         bootstrap();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // 현재 날짜 기준으로 일주일 날짜 계산
@@ -126,7 +125,7 @@ export default function BookingPage() {
         // 주차가 변경될 때마다 예약 목록 다시 가져오기
         const { start, end } = getWeekDateRange(currentWeekStart);
         fetchReservations(start, end);
-    }, [currentWeekStart]);
+    }, [currentWeekStart, fetchReservations]);
 
     // 예약 상태 타입 정의
     const RESERVATION_STATES = {
@@ -505,7 +504,7 @@ export default function BookingPage() {
     };
 
     // 예약 목록 API 호출
-    const fetchReservations = async (startDate, endDate) => {
+    const fetchReservations = useCallback(async (startDate, endDate) => {
         setReservationsLoading(true);
         try {
 
@@ -604,7 +603,7 @@ export default function BookingPage() {
         } finally {
             setReservationsLoading(false);
         }
-    };
+    }, [RESERVATION_STATES.PENDING, RESERVATION_STATES.CONFIRMED, RESERVATION_STATES.DISABLED]);
 
     // 주차의 시작/끝 날짜 계산
     const getWeekDateRange = (weekStart) => {

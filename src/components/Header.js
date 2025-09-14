@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import Sidebar from "./Sidebar";
 import simpleStyles from "./Header.module.css";
 import onboardingStyles from "./OnboardingHeader.module.css";
@@ -67,7 +68,7 @@ export default function Header({ variant, showMyReservation = false }) {
         return (
             <header className={simpleStyles.header}>
                 <div className={simpleStyles.logo}>
-                    <a href="/">
+                    <Link href="/">
                         <Image
                             src="/header-logo.png"
                             alt="고려대학교 로고"
@@ -75,7 +76,7 @@ export default function Header({ variant, showMyReservation = false }) {
                             height={63}
                             priority
                         />
-                    </a>
+                    </Link>
                 </div>
                 <div className={simpleStyles.headerRight}>
                     {showMyReservation && (

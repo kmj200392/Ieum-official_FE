@@ -24,6 +24,12 @@ export default function LockerLegend() {
                                 strokeWidth="2"
                                 strokeLinecap="round"
                             />
+                            <path
+                                d="M29.6 0.2L0.4 29.8"
+                                stroke="#737272"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
                         </svg>
                     </div>
                 </div>

@@ -6,14 +6,21 @@ import styles from "./LockerAccordion.module.css";
 export default function LockerAccordion({
     title,
     children,
-    isOpen = false,
+    isOpen,
     onToggle
 }) {
-    const [isOpenState, setIsOpenState] = useState(isOpen);
+    const isControlled = typeof isOpen === 'boolean';
+    const [isOpenState, setIsOpenState] = useState(false);
+    const open = isControlled ? isOpen : isOpenState;
 
     const handleToggle = () => {
-        setIsOpenState(!isOpenState);
-        onToggle?.(!isOpenState);
+        if (isControlled) {
+            onToggle?.(!open);
+        } else {
+            const next = !open;
+            setIsOpenState(next);
+            onToggle?.(next);
+        }
     };
 
     return (
@@ -21,10 +28,10 @@ export default function LockerAccordion({
             <button
                 className={styles.accordionHeader}
                 onClick={handleToggle}
-                aria-expanded={isOpenState}
+                aria-expanded={open}
             >
                 <span className={styles.title}>{title}</span>
-                <span className={`${styles.chevron} ${isOpenState ? styles.chevronUp : ''}`}>
+                <span className={`${styles.chevron} ${open ? styles.chevronUp : ''}`}>
                     <svg
                         width="20"
                         height="10"
@@ -43,7 +50,7 @@ export default function LockerAccordion({
                 </span>
             </button>
 
-            {isOpenState && (
+            {open && (
                 <div className={styles.accordionContent}>
                     {children}
                 </div>

@@ -4,6 +4,7 @@ export const REFRESH_ENDPOINT = `${API_BASE}/account/token/refresh/`;
 
 const ACCESS_KEY = "accessToken";
 const REFRESH_KEY = "refreshToken";
+const LOCKER_ACCESS_KEY = "lockerAccessToken";
 let refreshTimerId = null;
 
 export function getAccessToken() {
@@ -38,6 +39,27 @@ export function clearTokens() {
         clearTimeout(refreshTimerId);
         refreshTimerId = null;
     }
+}
+
+// Locker API 전용 토큰 관리 (별도 갱신 없음)
+export function setLockerAccessToken(token) {
+    try {
+        if (typeof token === "string") localStorage.setItem(LOCKER_ACCESS_KEY, token);
+    } catch { }
+}
+
+export function getLockerAccessToken() {
+    try {
+        return localStorage.getItem(LOCKER_ACCESS_KEY) || "";
+    } catch {
+        return "";
+    }
+}
+
+export function clearLockerAccessToken() {
+    try {
+        localStorage.removeItem(LOCKER_ACCESS_KEY);
+    } catch { }
 }
 
 function decodeJwtExp(token) {
@@ -152,12 +174,12 @@ export async function refreshAdminToken() {
     const data = await res.json().catch(() => ({}));
     const newAccess = data?.access;
     if (typeof newAccess !== "string") throw new Error("Invalid refresh response");
-    
+
     // 일반 토큰과 admin 토큰 모두 업데이트
     setTokens(newAccess, refresh);
     localStorage.setItem('adminToken', newAccess);
     scheduleAccessTokenRefresh(newAccess, refresh);
-    
+
     // 관리자 세션 쿠키도 업데이트
     try {
         await fetch("/api/admin/session", {
@@ -168,7 +190,7 @@ export async function refreshAdminToken() {
     } catch (error) {
         console.warn("Failed to update admin session:", error);
     }
-    
+
     return newAccess;
 }
 

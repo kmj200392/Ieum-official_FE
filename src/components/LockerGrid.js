@@ -13,7 +13,8 @@ const LockerState = {
 export default function LockerGrid({
     lockers = [],
     onLockerSelect,
-    selectedLocker = null
+    selectedLocker = null,
+    columns,
 }) {
     const handleLockerClick = (lockerId, state) => {
         if (state === LockerState.AVAILABLE) {
@@ -21,8 +22,10 @@ export default function LockerGrid({
         }
     };
 
+    const gridStyle = columns ? { ['--grid-template-columns']: `repeat(${columns}, 79px)` } : undefined;
+
     return (
-        <div className={styles.gridContainer}>
+        <div className={styles.gridContainer} style={gridStyle}>
             {lockers.map((locker) => (
                 <div
                     key={locker.id}
@@ -37,6 +40,12 @@ export default function LockerGrid({
                             <svg width="29.2" height="29.6" viewBox="0 0 30 30" fill="none">
                                 <path
                                     d="M0.4 0.2L29.6 29.8"
+                                    stroke="#737272"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                                <path
+                                    d="M29.6 0.2L0.4 29.8"
                                     stroke="#737272"
                                     strokeWidth="2"
                                     strokeLinecap="round"

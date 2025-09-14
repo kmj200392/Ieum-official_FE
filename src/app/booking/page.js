@@ -9,6 +9,14 @@ import GlassContainer from "../../components/GlassContainer";
 import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens, authorizedFetch, setMemoryTokens, setOrganizationName, getOrganizationName } from "../../utils/auth";
 import BookingBoard from "../../components/booking/BookingBoard";
 
+// 예약 상태 타입 정의 (컴포넌트 외부로 이동)
+const RESERVATION_STATES = {
+    AVAILABLE: 'available',      // 이용 가능 (회색)
+    PENDING: 'pending',          // 예약 중 (연빨강)
+    CONFIRMED: 'confirmed',      // 예약 완료 (진한 빨강)
+    DISABLED: 'disabled'         // 사용 불가 (회색)
+};
+
 export default function BookingPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [authReady, setAuthReady] = useState(false);
@@ -126,14 +134,6 @@ export default function BookingPage() {
         const { start, end } = getWeekDateRange(currentWeekStart);
         fetchReservations(start, end);
     }, [currentWeekStart, fetchReservations]);
-
-    // 예약 상태 타입 정의
-    const RESERVATION_STATES = {
-        AVAILABLE: 'available',      // 이용 가능 (회색)
-        PENDING: 'pending',          // 예약 중 (연빨강)
-        CONFIRMED: 'confirmed',      // 예약 완료 (진한 빨강)
-        DISABLED: 'disabled'         // 사용 불가 (회색)
-    };
 
     // 예약 데이터 (API에서 가져올 데이터)
     const [reservations, setReservations] = useState({});
@@ -603,7 +603,7 @@ export default function BookingPage() {
         } finally {
             setReservationsLoading(false);
         }
-    }, [RESERVATION_STATES.PENDING, RESERVATION_STATES.CONFIRMED, RESERVATION_STATES.DISABLED]);
+    }, []);
 
     // 주차의 시작/끝 날짜 계산
     const getWeekDateRange = (weekStart) => {

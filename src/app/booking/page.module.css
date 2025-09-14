@@ -21,8 +21,8 @@
     line-height: 1.05;
     text-align: center;
     color: #2C2C2C;
-    margin-top: 0px;
-    /* y=164 */
+    margin-top: -160px;
+    /* 로그인 화면 title 위치와 맞춤 */
     margin-bottom: 35px;
     /* gap to subtitle ~ per layout */
 }

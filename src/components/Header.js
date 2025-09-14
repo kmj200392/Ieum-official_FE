@@ -30,10 +30,11 @@ export default function Header({ variant, showMyReservation = false }) {
                 </div>
 
                 <nav className={onboardingStyles.nav} aria-label="주요 메뉴">
-                    <a href="/student-council" className={onboardingStyles.navLink}>학생회 소개</a>
+                    {/* 일시적으로 숨김 - 추후 활성화 예정 */}
+                    {/* <a href="/student-council" className={onboardingStyles.navLink}>학생회 소개</a>
                     <a href="/clubs" className={onboardingStyles.navLink}>동아리 소개</a>
                     <a href="/notices" className={onboardingStyles.navLink}>공지사항</a>
-                    <a href="/suggestions" className={onboardingStyles.navLink}>건의함</a>
+                    <a href="/suggestions" className={onboardingStyles.navLink}>건의함</a> */}
 
                     <a
                         href="https://www.instagram.com/kuci_ieum/"

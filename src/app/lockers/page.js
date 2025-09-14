@@ -12,6 +12,7 @@ import { LockerState } from "../../components/LockerGrid";
 import styles from "./page.module.css";
 import GlassContainer from "../../components/GlassContainer";
 import { setLockerAccessToken, getLockerAccessToken } from "../../utils/auth";
+import React from "react";
 
 export default function LockersPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,31 +25,36 @@ export default function LockersPage() {
     const [selectedLocker, setSelectedLocker] = useState(null);
     const [openLocationId, setOpenLocationId] = useState(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+    const [isErrorOpen, setIsErrorOpen] = useState(false);
     const [actionError, setActionError] = useState("");
     const [actionLoading, setActionLoading] = useState(false);
     const [portalEl, setPortalEl] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
+    const [confirmBodyText, setConfirmBodyText] = useState("");
     const [releaseLoading, setReleaseLoading] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
     const [lockerLocations, setLockerLocations] = useState([]);
     const [lockersLoading, setLockersLoading] = useState(false);
+    const [hasMyLocker, setHasMyLocker] = useState(false);
 
     useEffect(() => {
         if (typeof document === "undefined") return;
         setPortalEl(document.getElementById("portal-root"));
     }, []);
 
-    // 모달 활성화 시 Booking과 동일하게 body 배경 블러 처리
+    // 모달 활성화 시 Booking과 동일하게 body 배경 블러 처리 (확인/성공/에러 모달 포함)
     useEffect(() => {
         if (typeof document === "undefined") return;
-        if (isConfirmOpen) {
+        const shouldBlur = isConfirmOpen || isSuccessOpen || isErrorOpen;
+        if (shouldBlur) {
             document.body.classList.add("sidebar-open");
         } else {
             document.body.classList.remove("sidebar-open");
         }
         return () => document.body.classList.remove("sidebar-open");
-    }, [isConfirmOpen]);
+    }, [isConfirmOpen, isSuccessOpen, isErrorOpen]);
 
     // lockers 목록을 불러오는 공용 함수
     const fetchLockers = useCallback(async () => {
@@ -66,6 +72,12 @@ export default function LockersPage() {
                 throw new Error(data?.message || "사물함 목록을 불러오지 못했습니다.");
             }
             const list = Array.isArray(data?.lockers) ? data.lockers : [];
+
+            // 내 사물함 보유 여부 계산 (owner === 내 studentId)
+            const myId = formData.studentId?.trim();
+            const owned = !!(myId && list.some((l) => String(l.owner || "") === myId));
+            setHasMyLocker(owned);
+
             const locationToItems = new Map();
             list.forEach((item) => {
                 const loc = item.location_id || "기타";
@@ -95,10 +107,16 @@ export default function LockersPage() {
                         const real = cellMap.get(`${r}-${c}`);
                         if (real) {
                             const hasOwner = !!real.owner;
+                            const isMine = !!(myId && String(real.owner || "") === myId);
+                            const state = isMine
+                                ? LockerState.ASSIGNED
+                                : hasOwner
+                                    ? LockerState.DISABLED
+                                    : LockerState.AVAILABLE;
                             lockers.push({
                                 id: `locker-${real.locker_id}`,
                                 number: real.locker_id,
-                                state: hasOwner ? LockerState.ASSIGNED : LockerState.AVAILABLE,
+                                state,
                             });
                         } else {
                             lockers.push({ id: `ghost-${locTitle}-${r}-${c}`, number: "", state: LockerState.DISABLED });
@@ -113,7 +131,7 @@ export default function LockersPage() {
         } finally {
             setLockersLoading(false);
         }
-    }, []);
+    }, [formData.studentId]);
 
     // 로그인 후 최초 로딩
     useEffect(() => {
@@ -184,7 +202,6 @@ export default function LockersPage() {
 
     const getSelectedLockerNumber = () => Number(String(selectedLocker).replace("locker-", ""));
 
-    // 신청 버튼에서 즉시 모달 오픈 + API 호출 동시 수행
     const startApply = () => {
         if (actionLoading || releaseLoading || confirmLoading) return;
         setSuccessMessage("");
@@ -214,12 +231,19 @@ export default function LockersPage() {
             });
             const result = await res.json().catch(() => ({}));
             if (!res.ok) {
+                if (res.status === 409) {
+                    // 이미 선택된 사물함
+                    setIsConfirmOpen(false);
+                    setIsErrorOpen(true);
+                    return;
+                }
                 const message = result?.message || "신청에 실패했습니다. 잠시 후 다시 시도해 주세요.";
                 throw new Error(message);
             }
             const expiresIn = result?.expires_in;
             const expiresOn = result?.expires_on || result?.expires_at;
             let messageText = "";
+            let minutes = "";
             if (typeof expiresIn === "string" && expiresIn.trim().length > 0) {
                 const lower = expiresIn.toLowerCase();
                 const numMatch = lower.match(/\d+/);
@@ -228,6 +252,7 @@ export default function LockersPage() {
                 else if (lower.includes("hour")) messageText = `${num}시간 후 신청이 자동 취소됩니다.`;
                 else if (lower.includes("sec")) messageText = `${num}초 후 신청이 자동 취소됩니다.`;
                 else messageText = `${expiresIn} 후 신청이 자동 취소됩니다.`;
+                minutes = lower.includes("min") ? (num || "") : "";
             } else if (typeof expiresOn === "string") {
                 const now = Date.now();
                 const end = new Date(expiresOn).getTime();
@@ -236,8 +261,14 @@ export default function LockersPage() {
                 const secs = Math.round((diffMs % 60000) / 1000);
                 if (mins > 0) messageText = `약 ${mins}분 후 신청이 자동 취소됩니다.`;
                 else messageText = `약 ${secs}초 후 신청이 자동 취소됩니다.`;
+                minutes = String(Math.max(mins, 1));
             }
             setSuccessMessage(messageText);
+            if (minutes) {
+                setConfirmBodyText(`${minutes}분동안 확정하지 않으면\n선택이 취소됩니다`);
+            } else {
+                setConfirmBodyText(`일정 시간동안 확정하지 않으면\n선택이 취소됩니다`);
+            }
         } catch (e) {
             setActionError(e?.message || "요청 중 오류가 발생했습니다.");
         } finally {
@@ -293,8 +324,7 @@ export default function LockersPage() {
             setIsConfirmOpen(false);
             setSuccessMessage("");
             setSelectedLocker(null);
-            alert("사물함 신청이 확정되었습니다.");
-            // 확정 후 최신 상태로 목록 갱신
+            setIsSuccessOpen(true);
             fetchLockers();
         } catch (e) {
             setActionError(e?.message || "요청 중 오류가 발생했습니다.");
@@ -303,7 +333,6 @@ export default function LockersPage() {
         }
     };
 
-    // 로그인 전 화면
     if (!isLoggedIn) {
         return (
             <div className={styles.container}>
@@ -362,7 +391,6 @@ export default function LockersPage() {
         );
     }
 
-    // 로그인 후 사물함 배정표 화면
     return (
         <div className={styles.container}>
             <Header variant="simple" />
@@ -388,6 +416,7 @@ export default function LockersPage() {
                                         selectedLocker={selectedLocker}
                                         onLockerSelect={setSelectedLocker}
                                         columns={location.columns}
+                                        disableSelection={hasMyLocker}
                                     />
                                 </LockerAccordion>
                             ))}
@@ -420,14 +449,19 @@ export default function LockersPage() {
                         }
                     }}
                 >
-                    <GlassContainer radius={50} padding={50} variant="modal" className={styles.glassModal}>
-                        <h2 className={styles.glassModalTitle}>이 사물함을 신청하시겠습니까?</h2>
+                    <GlassContainer radius={50} padding={50} variant="modal" className={`${styles.glassModal} ${styles.successModal}`}>
+                        <h2 className={styles.glassModalTitle}>신청하시겠습니까?</h2>
 
-                        {successMessage && (
-                            <div className={styles.glassModalBody}>
-                                <p className={styles.expiryNotice}>{successMessage}</p>
-                            </div>
-                        )}
+                        <div className={styles.glassModalBody}>
+                            <p className={styles.successBody}>
+                                {confirmBodyText.split('\n').map((line, idx) => (
+                                    <React.Fragment key={idx}>
+                                        {line}
+                                        {idx === 0 && <br />}
+                                    </React.Fragment>
+                                ))}
+                            </p>
+                        </div>
 
                         {actionError && (
                             <div className={styles.errorMessage}>{actionError}</div>
@@ -435,18 +469,65 @@ export default function LockersPage() {
 
                         <div className={styles.glassModalActions}>
                             <button
-                                className={styles.cancelButton}
-                                onClick={handleReleaseHold}
-                                disabled={actionLoading || releaseLoading || confirmLoading}
-                            >
-                                취소
-                            </button>
-                            <button
-                                className={styles.submitButton}
+                                className={styles.successButton}
                                 onClick={handleConfirm}
                                 disabled={actionLoading || releaseLoading || confirmLoading}
                             >
-                                {confirmLoading ? "신청 중..." : "신청하기"}
+                                확인
+                            </button>
+                        </div>
+                    </GlassContainer>
+                </div>,
+                portalEl
+            )}
+
+            {portalEl && createPortal(
+                <div
+                    className={`${styles.modalOverlay} ${isSuccessOpen ? styles.active : ''}`}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsSuccessOpen(false);
+                        }
+                    }}
+                >
+                    <GlassContainer radius={50} padding={50} variant="modal" className={`${styles.glassModal} ${styles.successModal}`}>
+                        <h2 className={styles.glassModalTitle}>신청완료</h2>
+                        <div className={styles.glassModalBody}>
+                            <p className={styles.successBody}>선택하신 사물함 신청이<br />완료되었습니다</p>
+                        </div>
+                        <div className={styles.glassModalActions}>
+                            <button
+                                className={styles.successButton}
+                                onClick={() => setIsSuccessOpen(false)}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </GlassContainer>
+                </div>,
+                portalEl
+            )}
+
+            {portalEl && createPortal(
+                <div
+                    className={`${styles.modalOverlay} ${isErrorOpen ? styles.active : ''}`}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsErrorOpen(false);
+                        }
+                    }}
+                >
+                    <GlassContainer radius={50} padding={50} variant="modal" className={`${styles.glassModal} ${styles.successModal}`}>
+                        <h2 className={styles.glassModalTitle}>다시 시도해주세요.</h2>
+                        <div className={styles.glassModalBody}>
+                            <p className={styles.successBody}>이미 선택된 사물함입니다.</p>
+                        </div>
+                        <div className={styles.glassModalActions}>
+                            <button
+                                className={styles.successButton}
+                                onClick={() => setIsErrorOpen(false)}
+                            >
+                                확인
                             </button>
                         </div>
                     </GlassContainer>

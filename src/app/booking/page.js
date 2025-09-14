@@ -6,7 +6,7 @@ import Footer from "../../components/OnboardingFooter";
 import InputField from "../../components/InputField";
 import styles from "./page.module.css";
 import GlassContainer from "../../components/GlassContainer";
-import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens, authorizedFetch } from "../../utils/auth";
+import { setTokens, scheduleAccessTokenRefresh, getAccessToken, getRefreshToken, refreshAccessToken, clearTokens, authorizedFetch, setMemoryTokens, setOrganizationName, getOrganizationName } from "../../utils/auth";
 import BookingBoard from "../../components/booking/BookingBoard";
 
 export default function BookingPage() {
@@ -28,12 +28,24 @@ export default function BookingPage() {
                 if (access) {
                     scheduleAccessTokenRefresh(access, refresh);
                     setIsLoggedIn(true);
+
+                    // 이미 로그인된 상태에서 메모리에 단체명이 있으면 설정
+                    const orgName = getOrganizationName();
+                    if (orgName) {
+                        setRequestOrganization(orgName);
+                    }
                     return;
                 }
                 if (refresh) {
                     const newAccess = await refreshAccessToken();
                     scheduleAccessTokenRefresh(newAccess, refresh);
                     setIsLoggedIn(true);
+
+                    // refresh token으로 로그인 시에도 단체명 설정
+                    const orgName = getOrganizationName();
+                    if (orgName) {
+                        setRequestOrganization(orgName);
+                    }
                     return;
                 }
             } catch {
@@ -53,6 +65,7 @@ export default function BookingPage() {
 
     // 모달 상태
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+    const [showLoginScreen, setShowLoginScreen] = useState(false);
     const [requestEmail, setRequestEmail] = useState("");
     const [requestPurpose, setRequestPurpose] = useState("");
     const [requestOrganization, setRequestOrganization] = useState("");
@@ -111,11 +124,9 @@ export default function BookingPage() {
         setWeekDates(weekDates);
 
         // 주차가 변경될 때마다 예약 목록 다시 가져오기
-        if (isLoggedIn) {
-            const { start, end } = getWeekDateRange(currentWeekStart);
-            fetchReservations(start, end);
-        }
-    }, [currentWeekStart, isLoggedIn]);
+        const { start, end } = getWeekDateRange(currentWeekStart);
+        fetchReservations(start, end);
+    }, [currentWeekStart]);
 
     // 예약 상태 타입 정의
     const RESERVATION_STATES = {
@@ -181,8 +192,8 @@ export default function BookingPage() {
             const refresh = data?.refresh;
             if (typeof access !== "string") throw new Error("로그인 응답이 올바르지 않습니다.");
 
-            // 1) 클라이언트 토큰 저장 (client-side API 요청에 사용)
-            setTokens(access, refresh);
+            // 1) 메모리에 토큰 저장 (세션 동안만 유지)
+            setMemoryTokens(access, refresh);
             scheduleAccessTokenRefresh(access, refresh);
 
             // 2) 서버 세션/역할 쿠키 설정 (middleware 보호용) - 선택적 처리
@@ -201,6 +212,21 @@ export default function BookingPage() {
             }
 
             setIsLoggedIn(true);
+
+            // 로그인 성공 후 사용자 정보 가져와서 메모리에 저장
+            await fetchAndStoreUserInfo();
+
+            // 로그인 화면에서 로그인 성공 시 대관 화면으로 돌아가서 신청 모달 열기
+            if (showLoginScreen) {
+                setShowLoginScreen(false);
+                setIsRequestModalOpen(true);
+
+                // 메모리에서 단체명 가져와서 설정
+                const orgName = getOrganizationName();
+                if (orgName) {
+                    setRequestOrganization(orgName);
+                }
+            }
 
             // 로그인 성공 후 현재 주차의 예약 목록 가져오기
             const { start, end } = getWeekDateRange(currentWeekStart);
@@ -480,8 +506,6 @@ export default function BookingPage() {
 
     // 예약 목록 API 호출
     const fetchReservations = async (startDate, endDate) => {
-        if (!isLoggedIn) return;
-
         setReservationsLoading(true);
         try {
 
@@ -498,7 +522,7 @@ export default function BookingPage() {
             const startDateString = formatToKoreanTime(startDate);
             const endDateString = formatToKoreanTime(endDate);
 
-            const response = await authorizedFetch(
+            const response = await fetch(
                 `https://dev-api.kucisc.kr/api/room/overview/?start=${encodeURIComponent(startDateString)}&end=${encodeURIComponent(endDateString)}`,
                 {
                     method: 'GET',
@@ -594,7 +618,35 @@ export default function BookingPage() {
         return { start: sunday, end: nextSunday };
     };
 
-    // 현재 사용자 정보 가져오기
+    // 사용자 정보를 가져와서 메모리에 저장
+    const fetchAndStoreUserInfo = async () => {
+        try {
+            const response = await authorizedFetch('https://dev-api.kucisc.kr/api/account/me/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                console.warn("사용자 정보를 가져오는데 실패했습니다:", response.status);
+                return;
+            }
+
+            const userData = await response.json();
+            console.log('사용자 정보:', userData);
+
+            // first_name을 단체명으로 메모리에 저장
+            if (userData.first_name) {
+                setOrganizationName(userData.first_name);
+            }
+
+        } catch (error) {
+            console.error("사용자 정보 조회 오류:", error);
+        }
+    };
+
+    // 현재 사용자 정보 가져오기 (기존 함수 유지)
     const fetchUserInfo = async () => {
         if (!isLoggedIn) return;
 
@@ -946,8 +998,8 @@ export default function BookingPage() {
         return null;
     }
 
-    // 2) 토큰 확인 완료 후, 비로그인 상태면 로그인 화면 렌더
-    if (!isLoggedIn) {
+    // 2) 로그인 화면 표시 조건 확인
+    if (showLoginScreen) {
         return (
             <div className={styles.container}>
                 <Header />
@@ -998,7 +1050,7 @@ export default function BookingPage() {
         );
     }
 
-    // 3) 로그인 상태면 원래 예약 화면 렌더
+    // 3) 대관 화면 렌더
     const { startLabel, endLabel } = getSelectedRange();
 
     return (
@@ -1080,9 +1132,21 @@ export default function BookingPage() {
                 <button
                     className={styles.bookingButton}
                     onClick={() => {
+                        // 로그인 체크
+                        if (!isLoggedIn) {
+                            setShowLoginScreen(true);
+                            setLoginError(""); // 로그인 화면 전환 시 에러 초기화
+                            return;
+                        }
+
                         setIsRequestModalOpen(true);
                         setRequestError(""); // 모달 열 때 에러 초기화
-                        fetchUserInfo(); // 사용자 정보 가져오기
+
+                        // 메모리에서 단체명 가져와서 설정
+                        const orgName = getOrganizationName();
+                        if (orgName) {
+                            setRequestOrganization(orgName);
+                        }
                     }}
                 >
                     대관 신청하기

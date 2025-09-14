@@ -2,7 +2,6 @@
 
 import React from "react";
 import styles from "./LockerLegend.module.css";
-import { LockerState } from "./LockerGrid";
 
 export default function LockerLegend() {
     return (
@@ -17,19 +16,9 @@ export default function LockerLegend() {
             <div className={styles.legendItem}>
                 <div className={`${styles.sampleLocker} ${styles.disabled}`}>
                     <div className={styles.disabledIcon}>
-                        <svg width="29.2" height="29.6" viewBox="0 0 30 30" fill="none">
-                            <path
-                                d="M0.4 0.2L29.6 29.8"
-                                stroke="#737272"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                            />
-                            <path
-                                d="M29.6 0.2L0.4 29.8"
-                                stroke="#737272"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                            />
+                        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <path d="M5 5 L95 95" stroke="currentColor" strokeWidth="3" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                            <path d="M95 5 L5 95" stroke="currentColor" strokeWidth="3" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
                         </svg>
                     </div>
                 </div>

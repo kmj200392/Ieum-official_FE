@@ -4,10 +4,19 @@ export const REFRESH_ENDPOINT = `${API_BASE}/account/token/refresh/`;
 
 const ACCESS_KEY = "accessToken";
 const REFRESH_KEY = "refreshToken";
-const LOCKER_ACCESS_KEY = "lockerAccessToken";
+// Locker access token은 메모리 변수에만 저장 (새로고침 시 초기화)
+let lockerAccessToken = "";
 let refreshTimerId = null;
 
+// 메모리 변수로 토큰과 사용자 정보 저장 (새로고침 시 초기화)
+let memoryAccessToken = "";
+let memoryRefreshToken = "";
+let memoryOrganizationName = "";
+
 export function getAccessToken() {
+    // 메모리 변수를 우선으로 사용
+    if (memoryAccessToken) return memoryAccessToken;
+
     try {
         return localStorage.getItem(ACCESS_KEY) || "";
     } catch {
@@ -16,6 +25,9 @@ export function getAccessToken() {
 }
 
 export function getRefreshToken() {
+    // 메모리 변수를 우선으로 사용
+    if (memoryRefreshToken) return memoryRefreshToken;
+
     try {
         return localStorage.getItem(REFRESH_KEY) || "";
     } catch {
@@ -30,36 +42,49 @@ export function setTokens(access, refresh) {
     } catch { }
 }
 
+// 메모리에 토큰 저장 (새로고침 시 초기화)
+export function setMemoryTokens(access, refresh) {
+    memoryAccessToken = typeof access === "string" ? access : "";
+    memoryRefreshToken = typeof refresh === "string" ? refresh : "";
+}
+
+// 단체명 관리
+export function setOrganizationName(name) {
+    memoryOrganizationName = typeof name === "string" ? name : "";
+}
+
+export function getOrganizationName() {
+    return memoryOrganizationName;
+}
+
 export function clearTokens() {
     try {
         localStorage.removeItem(ACCESS_KEY);
         localStorage.removeItem(REFRESH_KEY);
     } catch { }
+
+    // 메모리 변수들도 정리
+    memoryAccessToken = "";
+    memoryRefreshToken = "";
+    memoryOrganizationName = "";
+
     if (refreshTimerId) {
         clearTimeout(refreshTimerId);
         refreshTimerId = null;
     }
 }
 
-// Locker API 전용 토큰 관리 (별도 갱신 없음)
+// Locker API 전용 토큰 관리 (메모리 저장)
 export function setLockerAccessToken(token) {
-    try {
-        if (typeof token === "string") localStorage.setItem(LOCKER_ACCESS_KEY, token);
-    } catch { }
+    lockerAccessToken = typeof token === "string" ? token : "";
 }
 
 export function getLockerAccessToken() {
-    try {
-        return localStorage.getItem(LOCKER_ACCESS_KEY) || "";
-    } catch {
-        return "";
-    }
+    return lockerAccessToken || "";
 }
 
 export function clearLockerAccessToken() {
-    try {
-        localStorage.removeItem(LOCKER_ACCESS_KEY);
-    } catch { }
+    lockerAccessToken = "";
 }
 
 function decodeJwtExp(token) {
@@ -96,7 +121,9 @@ export async function refreshAccessToken() {
     const data = await res.json().catch(() => ({}));
     const newAccess = data?.access;
     if (typeof newAccess !== "string") throw new Error("Invalid refresh response");
-    setTokens(newAccess, refresh);
+
+    // 메모리 변수도 업데이트
+    setMemoryTokens(newAccess, refresh);
     scheduleAccessTokenRefresh(newAccess, refresh);
     return newAccess;
 }
@@ -176,7 +203,7 @@ export async function refreshAdminToken() {
     if (typeof newAccess !== "string") throw new Error("Invalid refresh response");
 
     // 일반 토큰과 admin 토큰 모두 업데이트
-    setTokens(newAccess, refresh);
+    setMemoryTokens(newAccess, refresh);
     localStorage.setItem('adminToken', newAccess);
     scheduleAccessTokenRefresh(newAccess, refresh);
 

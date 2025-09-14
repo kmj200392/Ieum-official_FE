@@ -15,8 +15,10 @@ export default function LockerGrid({
     onLockerSelect,
     selectedLocker = null,
     columns,
+    disableSelection = false,
 }) {
     const handleLockerClick = (lockerId, state) => {
+        if (disableSelection) return;
         if (state === LockerState.AVAILABLE) {
             onLockerSelect?.(lockerId);
         }
@@ -37,18 +39,20 @@ export default function LockerGrid({
                     <span className={styles.lockerNumber}>{locker.number}</span>
                     {locker.state === LockerState.DISABLED && (
                         <div className={styles.disabledIcon}>
-                            <svg width="29.2" height="29.6" viewBox="0 0 30 30" fill="none">
+                            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                                 <path
-                                    d="M0.4 0.2L29.6 29.8"
-                                    stroke="#737272"
-                                    strokeWidth="2"
+                                    d="M5 5 L95 95"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
                                     strokeLinecap="round"
+                                    vectorEffect="non-scaling-stroke"
                                 />
                                 <path
-                                    d="M29.6 0.2L0.4 29.8"
-                                    stroke="#737272"
-                                    strokeWidth="2"
+                                    d="M95 5 L5 95"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
                                     strokeLinecap="round"
+                                    vectorEffect="non-scaling-stroke"
                                 />
                             </svg>
                         </div>

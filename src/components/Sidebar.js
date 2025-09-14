@@ -57,8 +57,9 @@ export default function Sidebar() {
                         <div className={styles.sidebarContent}>
                             <a href="/booking" className={styles.sidebarMenuItem}>학생회실 대관</a>
                             <a href="/lockers" className={styles.sidebarMenuItem}>사물함</a>
-                            <a href="/equipment" className={styles.sidebarMenuItem}>물품 대여</a>
-                            <a href="/certificate" className={styles.sidebarMenuItem}>활동증명서 신청</a>
+                            {/* 일시적으로 숨김 - 추후 활성화 예정 */}
+                            {/* <a href="/equipment" className={styles.sidebarMenuItem}>물품 대여</a>
+                            <a href="/certificate" className={styles.sidebarMenuItem}>활동증명서 신청</a> */}
                         </div>
                     </div>
                 </>, portalEl)}

@@ -47,6 +47,11 @@
   color: #000000;
 }
 
+.navLink:hover {
+  opacity: 0.8;
+  transition: 0.2s ease-in-out;
+}
+
 .iconBox {
   width: 32px;
   height: 32px;
@@ -75,7 +80,8 @@
 
 @media (prefers-color-scheme: dark) {
   /* CSS rules for dark mode */
-  .brandText {
+  .brandText,
+  .navLink {
     color: #ffffff;
   }
 }

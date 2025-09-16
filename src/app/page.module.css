@@ -4,15 +4,16 @@
 }
 
 .heroRow {
-  width: 100%;
+  width: 90%;
   max-width: 1512px;
   margin: 0 auto;
-  padding-top: 275px;
-  padding-left: 194px;
+  /* padding-top: 120px; */
+  /* padding-left: 194px; */
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 150px;
+  height: 100vh;
 }
 
 .chevronBtn {
@@ -65,8 +66,8 @@
 }
 
 .rightImageBox {
-  width: 461px;
-  height: 432.91px;
+  width: 50%;
+  /* height: 432.91px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +111,7 @@
 .snapSection {
   width: 100%;
   max-width: 1512px;
-  height: 982px;
+  height: 110vh;
   margin: 0 auto;
   /* remove centering to respect Figma offsets */
   display: block;

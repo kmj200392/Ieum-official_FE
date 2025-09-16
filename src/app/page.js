@@ -372,6 +372,7 @@ export default function Home() {
             priority
             style={{
               maxWidth: "90vw",
+              // minWidth:'30vw',
               maxHeight: "60vh",
               objectFit: "contain",
             }}

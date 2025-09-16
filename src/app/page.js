@@ -373,8 +373,9 @@ export default function Home() {
             style={{
               maxWidth: "90vw",
               // minWidth:'30vw',
-              maxHeight: "60vh",
+              maxHeight: "40vh",
               objectFit: "contain",
+              marginTop: "100px",
             }}
           />
           <p

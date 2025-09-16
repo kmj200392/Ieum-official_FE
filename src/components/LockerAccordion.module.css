@@ -1,69 +1,82 @@
 .accordionItem {
-    width: 880px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .accordionHeader {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .accordionHeader:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .title {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 500;
-    font-size: 24px;
-    line-height: 1.193359375em;
-    text-align: center;
-    color: #000000;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.193359375em;
+  text-align: center;
+  color: #000000;
 }
 
 .chevron {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .chevronUp {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .accordionContent {
-    width: 100%;
-    padding-top: 15px;
-    animation: slideDown 0.3s ease-out;
+  width: 100%;
+  padding-top: 15px;
+  animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .separator {
-    width: 880px;
-    height: 1px;
-    background: #5C5C5C;
+  width: 100%;
+  height: 1px;
+  background: #5c5c5c;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .title {
+    color: #ffffff;
+  }
+  .separator {
+    background: #f0f0f0;
+  }
+  .chevron svg path {
+    stroke: #f0f0f0;
+  }
 }

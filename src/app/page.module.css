@@ -41,27 +41,27 @@
 
 .koTitle {
   margin: 0;
-  font-family: 'KIMM_Bold', sans-serif;
+  font-family: "KIMM_Bold", sans-serif;
   font-weight: 700;
   font-size: 65px;
   line-height: 1.3846153846;
-  color: #FBFBFB;
+  color: #fbfbfb;
 }
 
 .dividerLine {
   width: 510px;
   height: 0px;
-  border-top: 1px solid #FBFBFB;
+  border-top: 1px solid #fbfbfb;
   margin: 20px 0;
 }
 
 .enTitle {
   margin: 0;
-  font-family: 'KIMM_Light', sans-serif;
+  font-family: "KIMM_Light", sans-serif;
   font-weight: 300;
   font-size: 32.88px;
   line-height: 1.3846153846;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .rightImageBox {
@@ -158,18 +158,18 @@
 .aboutDivider {
   width: 468px;
   height: 0px;
-  border-top: 1px solid #FBFBFB;
+  border-top: 1px solid #fbfbfb;
   margin: 0 auto;
 }
 
 .aboutTitle {
-  font-family: 'Pak_Yong_jun', 'Pretendard', sans-serif !important;
+  font-family: "Pak_Yong_jun", "Pretendard", sans-serif !important;
   font-weight: 400 !important;
   font-style: normal;
   font-size: 51.8876px;
   line-height: 1.2966;
   letter-spacing: 0;
-  color: #FBFBFB;
+  color: #fbfbfb;
   text-align: center;
   margin: 0 0 0;
   font-synthesis-weight: none;
@@ -177,13 +177,13 @@
 }
 
 .aboutBody {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 400 !important;
   font-style: normal;
   font-size: 16px;
   line-height: 1.8551;
   letter-spacing: 0;
-  color: #FBFBFB;
+  color: #fbfbfb;
   text-align: center;
   font-synthesis-weight: none;
   font-synthesis-style: none;
@@ -195,11 +195,11 @@
   justify-content: center;
   gap: 10px;
   padding: 10px 30px;
-  border: 2px solid #FFFFFF;
+  border: 2px solid #ffffff;
   border-radius: 10px;
-  color: #FFFFFF;
+  color: #ffffff;
   text-decoration: none;
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 500;
   font-size: 20px;
   background: transparent;
@@ -214,11 +214,11 @@
   transform: translateX(-50%);
   width: 285px;
   height: 68px;
-  font-family: 'KIMM_Bold', sans-serif;
+  font-family: "KIMM_Bold", sans-serif;
   font-weight: 700;
   font-size: 65px;
   line-height: 1.05;
-  color: #6F3037;
+  color: #6f3037;
   text-align: center;
   text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
@@ -249,21 +249,21 @@
 }
 
 .carouselTitle {
-  font-family: 'KIMM_Bold', sans-serif;
+  font-family: "KIMM_Bold", sans-serif;
   font-weight: 700;
   font-size: 65px;
   line-height: 1.05;
-  color: #6F3037;
+  color: #6f3037;
   text-align: center;
   text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .carouselSubtitle {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 500;
   font-size: 18px;
   line-height: 1.6666666667;
-  color: #6F3037;
+  color: #6f3037;
   text-align: center;
 }
 
@@ -283,12 +283,15 @@
   height: 48px;
   border: none;
   border-radius: 50%;
-  background: #6F3037;
-  color: #FBFBFB;
+  background: #6f3037;
+  color: #fbfbfb;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -296,7 +299,7 @@
   top: calc(50% + 4px);
   margin-top: -24px;
   z-index: 10;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   --nav-arrow-stroke: 2px;
 }
 
@@ -316,13 +319,15 @@
 
 .weekNavigationButton:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-  background: #6F3037;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #6f3037;
 }
 
 .weekNavigationButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(111, 48, 55, 0.25), 0 2px 10px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 0 0 3px rgba(111, 48, 55, 0.25),
+    0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .weekNavigationButton svg {
@@ -356,7 +361,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #6F3037;
+  background: #6f3037;
   border: none;
   cursor: pointer;
 }
@@ -405,11 +410,11 @@
 .carouselCardTitle {
   width: 250px;
   text-align: center;
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 700;
   font-size: 32px;
   line-height: 1.1933;
-  color: #FFFFFF;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -418,11 +423,11 @@
 .carouselCardCaption {
   width: 250px;
   text-align: center;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
   font-weight: 200;
   font-size: 20px;
   line-height: 1.1933;
-  color: #FFFFFF;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -435,11 +440,11 @@
   justify-content: center;
   gap: 10px;
   padding: 10px 30px;
-  border: 2px solid #FFFFFF;
+  border: 2px solid #ffffff;
   border-radius: 10px;
-  color: #FFFFFF;
+  color: #ffffff;
   background: transparent;
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 500;
   font-size: 20px;
 }
@@ -465,21 +470,21 @@
 }
 
 .clubsTitle {
-  font-family: 'KIMM_Bold', sans-serif;
+  font-family: "KIMM_Bold", sans-serif;
   font-weight: 700;
   font-size: 65px;
   line-height: 1.05;
-  color: #6F3037;
+  color: #6f3037;
   text-align: center;
   text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .clubsSubtitle {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 500;
   font-size: 18px;
   line-height: 1.6667;
-  color: #6F3037;
+  color: #6f3037;
   text-align: center;
 }
 
@@ -538,22 +543,22 @@
 }
 
 .clubName {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   font-weight: 700;
   font-size: 40px;
   line-height: 1.1933;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   white-space: nowrap;
   width: 250px;
 }
 
 .clubDesc {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
   font-weight: 200;
   font-size: 20px;
   line-height: 1.1933;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -577,5 +582,16 @@
 
   .weekNavigationButton:last-of-type {
     right: -56px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .carouselTitle,
+  .carouselSubtitle,
+  .clubsTitle,
+  .clubsSubtitle,
+  .visitTitle {
+    color: #ffffff;
   }
 }

@@ -1,64 +1,75 @@
 .legendContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 45px;
-    padding: 20px 25px;
-    border-radius: 20px;
-    background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%);
-    box-shadow: inset -5px -5px 250px 0px rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(42px);
-    width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 45px;
+  padding: 20px 25px;
+  border-radius: 20px;
+  background: radial-gradient(
+    100% 100% at 0% 0%,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  box-shadow: inset -5px -5px 250px 0px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(42px);
+  width: fit-content;
 }
 
 .legendItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .sampleLocker {
-    width: 30px;
-    height: 30px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    backdrop-filter: blur(16px);
-    border: 2px solid;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  backdrop-filter: blur(16px);
+  border: 2px solid;
 }
 
 .sampleLocker.available {
-    background: rgba(111, 48, 55, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: rgba(255, 255, 255, 0.5);
+  background: rgba(111, 48, 55, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .sampleLocker.disabled {
-    background: rgba(115, 114, 114, 0.1);
-    border-color: rgba(115, 114, 114, 0.5);
-    /* match the in-grid disabled X color visually */
-    color: rgba(115, 114, 114, 0.45);
+  background: rgba(115, 114, 114, 0.1);
+  border-color: rgba(115, 114, 114, 0.5);
+  /* match the in-grid disabled X color visually */
+  color: rgba(115, 114, 114, 0.45);
 }
 
 .legendText {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.193359375em;
-    text-align: center;
-    color: #000000;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.193359375em;
+  text-align: center;
+  color: #000000;
 }
 
 .disabledIcon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .legendText {
+    color: #ffffff;
+  }
 }

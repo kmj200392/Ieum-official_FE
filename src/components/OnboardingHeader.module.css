@@ -1,74 +1,87 @@
 .header {
-    width: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 50px 0 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: none;
-    z-index: 1000;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 50px 0 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: none;
+  z-index: 1000;
 }
 
 .leftGroup {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: 75px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 75px;
 }
 
 .brandText {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 600;
-    /* Figma variant shows 600 on landing instance */
-    font-size: 20px;
-    line-height: 1.1933;
-    color: #000000;
+  display: flex;
+  flex-direction: column;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+  /* Figma variant shows 600 on landing instance */
+  font-size: 20px;
+  line-height: 1.1933;
+  color: #000000;
 }
 
 .nav {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-right: 75px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-right: 75px;
 }
 
 .navLink {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 20px;
-    line-height: 1.1933;
-    color: #000000;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 1.1933;
+  color: #000000;
+}
+
+.navLink:hover {
+  opacity: 0.8;
+  transition: 0.2s ease-in-out;
 }
 
 .iconBox {
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .instagramIcon {
-    /* Positioned 2.67px from top-left inside 32x32, here we center since SVG viewBox handles inner size */
+  /* Positioned 2.67px from top-left inside 32x32, here we center since SVG viewBox handles inner size */
 }
 
 .menuIcon {
-    /* In Figma, inner icon 24x16 located at (4,8) within 32x32. Centering visually matches; SVG path uses absolute width/height. */
+  /* In Figma, inner icon 24x16 located at (4,8) within 32x32. Centering visually matches; SVG path uses absolute width/height. */
 }
 
 @media (max-width: 768px) {
-    .leftGroup {
-        margin-left: 20px;
-    }
-    
-    .nav {
-        margin-right: 20px;
-    }
+  .leftGroup {
+    margin-left: 20px;
+  }
+
+  .nav {
+    margin-right: 20px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .brandText,
+  .navLink {
+    color: #ffffff;
+  }
 }

@@ -1,666 +1,676 @@
 /* 전체 컨테이너 */
 .container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    position: relative;
-    padding-bottom: 200px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  position: relative;
+  padding-bottom: 200px;
 }
 
 .main {
-    flex: 1;
-    padding: 0;
+  flex: 1;
+  padding: 0;
 }
 
 /* 로그인 프리뷰 (Figma 정확 값) */
 .title {
-    font-family: 'KIMM_Light', 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 50px;
-    line-height: 1.05;
-    text-align: center;
-    color: #2C2C2C;
-    margin-top: -160px;
-    /* 로그인 화면 title 위치와 맞춤 */
-    margin-bottom: 35px;
-    /* gap to subtitle ~ per layout */
+  font-family: "KIMM_Light", "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 50px;
+  line-height: 1.05;
+  text-align: center;
+  color: #2c2c2c;
+  margin-top: -160px;
+  /* 로그인 화면 title 위치와 맞춤 */
+  margin-bottom: 35px;
+  /* gap to subtitle ~ per layout */
 }
 
 .subtitle {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 1.1933;
-    color: #5C5C5C;
-    text-align: center;
-    width: 414px;
-    margin: 0 auto;
-    margin-bottom: 30px;
-    /* space before glass container */
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.1933;
+  color: #5c5c5c;
+  text-align: center;
+  width: 414px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  /* space before glass container */
 }
 
 .glassContainer {
-    width: 414px;
-    margin: 0 auto;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-    border-radius: 50px;
-    position: relative;
+  width: 414px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  border-radius: 50px;
+  position: relative;
 }
 
-
 .inputField {
-    width: 241px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 0 auto;
-    /* center within 414px */
+  width: 241px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 auto;
+  /* center within 414px */
 }
 
 .inputField label {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1;
-    color: #1E1E1E;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1;
+  color: #1e1e1e;
 }
 
 .inputField input {
-    width: 241px;
-    /* fix exact size to avoid browser min-width quirks */
-    padding: 12px 16px;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.4;
-    color: #1E1E1E;
-    background: #FFFFFF;
+  width: 241px;
+  /* fix exact size to avoid browser min-width quirks */
+  padding: 12px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #1e1e1e;
+  background: #ffffff;
 }
 
 .loginButton {
-    width: 241px;
-    margin: 0 auto;
-    /* center align with inputs */
-    background: #2C2C2C;
-    color: #FFFFFF;
-    border: none;
-    padding: 10px 30px;
-    border-radius: 10px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 1.1933;
-    cursor: pointer;
+  width: 241px;
+  margin: 0 auto;
+  /* center align with inputs */
+  background: #2c2c2c;
+  color: #ffffff;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.1933;
+  cursor: pointer;
 }
 
 /* 예약 페이지 스타일 */
 .bookingPageContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .headerSection {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .myReservation {
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: #000;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000;
 }
 
 /* 정보 섹션 */
 .infoSection {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 .infoText {
-    text-align: center;
-    font-size: 0.9rem;
-    color: white;
-    line-height: 1.4;
+  text-align: center;
+  font-size: 0.9rem;
+  color: white;
+  line-height: 1.4;
 }
 
 /* 대관 신청하기 버튼 - Figma 디자인과 완전히 동일하게 적용 */
 .bookingButton {
-    position: fixed;
-    bottom: 120px;
-    right: 20px;
-    background: #FBFBFB;
-    color: #2C2C2C;
-    border: none;
-    padding: 20px 40px;
-    font-size: 24px;
-    font-weight: 500;
-    font-family: 'Pretendard', sans-serif;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 100;
-    min-width: 200px;
-    height: auto;
-    line-height: 1.193359375em;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: slideInUp 0.3s ease-out;
-    box-shadow: 0 2px 8px rgba(44, 44, 44, 0.1);
+  position: fixed;
+  bottom: 120px;
+  right: 20px;
+  background: #fbfbfb;
+  color: #2c2c2c;
+  border: none;
+  padding: 20px 40px;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: "Pretendard", sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 100;
+  min-width: 200px;
+  height: auto;
+  line-height: 1.193359375em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: slideInUp 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(44, 44, 44, 0.1);
 }
 
 .bookingButton:hover {
-    background: #F0F0F0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(44, 44, 44, 0.15);
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 44, 44, 0.15);
 }
 
 .bookingButton:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(44, 44, 44, 0.1);
-    background: #E8E8E8;
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(44, 44, 44, 0.1);
+  background: #e8e8e8;
 }
 
 /* 버튼 등장 애니메이션 */
 @keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
-
 
 /* 모달 - 사이드바와 완전히 동일한 방식으로 blur 효과 적용 */
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s ease;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modalOverlay.active {
-    opacity: 1;
-    visibility: visible;
-    background: rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
 }
 
 .glassModal {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
-    padding: 50px;
-    border-radius: 50px;
-    position: relative;
-    min-width: fit-content;
-    max-width: 90vw;
-    opacity: 0;
-    transform: scale(0.9);
-    transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 50px;
+  border-radius: 50px;
+  position: relative;
+  min-width: fit-content;
+  max-width: 90vw;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.25s ease;
 }
 
-
 .modalOverlay.active .glassModal {
-    opacity: 1;
-    transform: scale(1);
+  opacity: 1;
+  transform: scale(1);
 }
 
 .glassModalTitle {
-    font-family: 'KIMM_Bold', 'Pretendard', sans-serif;
-    font-weight: 700;
-    font-size: 35px;
-    line-height: 1.05em;
-    text-align: center;
-    color: #000000;
-    margin: 0;
-    width: 100%;
+  font-family: "KIMM_Bold", "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 35px;
+  line-height: 1.05em;
+  text-align: center;
+  color: #000000;
+  margin: 0;
+  width: 100%;
 }
 
 .glassModalBody {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 330px;
 }
 
 /* 시간 필드 가로 배치 */
 .timeFieldsGroup {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
 }
 
 .timeField {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
 .fieldGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
 .fieldLabel {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1em;
-    text-align: left;
-    color: #2C2C2C;
-    margin: 0;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1em;
+  text-align: left;
+  color: #2c2c2c;
+  margin: 0;
 }
 
 /* Disabled 입력 필드 (시간, 단체명) */
 .disabledTimeInput {
-    width: 150px;
-    height: 40px;
-    padding: 12px 16px;
-    background: #E4E4E4;
-    border: 1px solid #B2B2B2;
-    border-radius: 8px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.4em;
-    color: #B3B3B3;
-    box-sizing: border-box;
+  width: 150px;
+  height: 40px;
+  padding: 12px 16px;
+  background: #e4e4e4;
+  border: 1px solid #b2b2b2;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: #b3b3b3;
+  box-sizing: border-box;
 }
 
 .disabledInput {
-    width: 100%;
-    height: 40px;
-    padding: 12px 16px;
-    background: #E4E4E4;
-    border: 1px solid #B2B2B2;
-    border-radius: 8px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.4em;
-    color: #B3B3B3;
-    box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 12px 16px;
+  background: #e4e4e4;
+  border: 1px solid #b2b2b2;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: #b3b3b3;
+  box-sizing: border-box;
 }
 
 /* Active 입력 필드 (대관 목적, 이메일) */
 .activeInput {
-    width: 100%;
-    height: 40px;
-    padding: 12px 16px;
-    background: #FFFFFF;
-    border: 1px solid #D9D9D9;
-    border-radius: 8px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.4em;
-    color: #C0C0C0;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease, color 0.2s ease;
+  width: 100%;
+  height: 40px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: #c0c0c0;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .activeInput:focus {
-    outline: none;
-    border-color: #6F3037;
-    color: #2C2C2C;
+  outline: none;
+  border-color: #6f3037;
+  color: #2c2c2c;
 }
 
 .activeInput::placeholder {
-    color: #C0C0C0;
+  color: #c0c0c0;
 }
 
 .errorText {
-    font-size: 14px;
-    color: #A40732;
-    margin-top: 4px;
+  font-size: 14px;
+  color: #a40732;
+  margin-top: 4px;
 }
 
 .errorMessage {
-    background: #ffebee;
-    color: #c62828;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    text-align: center;
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* 버튼 그룹 */
 .glassModalActions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 17px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 17px;
+  width: 100%;
 }
 
 .cancelButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 30px;
-    width: 170px;
-    background: #5C5C5C;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 1.193359375em;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 30px;
+  width: 170px;
+  background: #5c5c5c;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.193359375em;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .cancelButton:hover {
-    background: #4A4A4A;
-    transform: translateY(-1px);
+  background: #4a4a4a;
+  transform: translateY(-1px);
 }
 
 .submitButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 30px;
-    width: 170px;
-    background: #6F3037;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 1.193359375em;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 30px;
+  width: 170px;
+  background: #6f3037;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.193359375em;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .submitButton:hover {
-    background: #532228;
-    transform: translateY(-1px);
+  background: #532228;
+  transform: translateY(-1px);
 }
 
 .submitButton:disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-    transform: none;
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .submitButton:disabled:hover {
-    background: #cccccc;
-    transform: none;
+  background: #cccccc;
+  transform: none;
 }
 
-
-
 .weekNavigationButton {
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 50%;
-    background: #6F3037;
-    color: #FBFBFB;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 30px;
-    /* DateHeader 영역 중앙에 조금 더 근접하게 */
-    z-index: 10;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
-    --nav-arrow-stroke: 3.5px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #6f3037;
+  color: #fbfbfb;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 30px;
+  /* DateHeader 영역 중앙에 조금 더 근접하게 */
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --nav-arrow-stroke: 3.5px;
 }
 
 .weekNavigationButton:first-of-type {
-    left: -64px;
+  left: -64px;
 }
 
 .weekNavigationButton:last-of-type {
-    right: -64px;
+  right: -64px;
 }
 
 .weekNavigationButton:hover {
-    background: #532228;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  background: #532228;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .weekNavigationButton:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-    background: #6F3037;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #6f3037;
 }
 
 .weekNavigationButton:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(111, 48, 55, 0.25), 0 2px 10px rgba(0, 0, 0, 0.10);
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(111, 48, 55, 0.25),
+    0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .weekNavigationButton svg {
-    width: 14px;
-    height: 24px;
+  width: 14px;
+  height: 24px;
 }
 
 .weekNavigationButton svg path {
-    stroke: currentColor;
-    stroke-width: var(--nav-arrow-stroke);
-    vector-effect: non-scaling-stroke;
+  stroke: currentColor;
+  stroke-width: var(--nav-arrow-stroke);
+  vector-effect: non-scaling-stroke;
 }
 
 /* Figma 기준 내부 화살표 오프셋 */
 .weekNavigationButton:first-of-type svg {
-    transform: translateX(-3px);
+  transform: translateX(-3px);
 }
 
 .weekNavigationButton:last-of-type svg {
-    transform: translateX(3px);
+  transform: translateX(3px);
 }
 
 /* Booking Board 컨테이너 */
 .bookingBoardContainer {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
 }
 
 /* 중앙 그룹: BookingBoard 중앙 배치 */
 .centerGroup {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
 }
 
 /* 시간 컬럼 */
 .timeColumn {
-    width: 45px;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    padding-top: 10px;
-    z-index: 1;
-    position: absolute;
-    left: -69px;
-    /* BookingBoard 왼쪽에 배치 (45px width + 24px gap) */
+  width: 45px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding-top: 10px;
+  z-index: 1;
+  position: absolute;
+  left: -69px;
+  /* BookingBoard 왼쪽에 배치 (45px width + 24px gap) */
 }
 
 .timeLabel {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #666666;
-    margin-bottom: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  margin-bottom: 0;
 }
 
 .timeLabel:first-child {
-    margin-top: 90px;
-    /* Day(40px) + Date(40px) + gap(10px) 높이만큼 상단 여백 추가 */
+  margin-top: 90px;
+  /* Day(40px) + Date(40px) + gap(10px) 높이만큼 상단 여백 추가 */
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .loginContainer {
-        padding: 2rem 1rem;
-        margin-top: 2rem;
-    }
+  .loginContainer {
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+  }
 
-    .title {
-        font-size: 2rem;
-    }
+  .title {
+    font-size: 2rem;
+  }
 
-    .subtitle {
-        font-size: 1.2rem;
-    }
+  .subtitle {
+    font-size: 1.2rem;
+  }
 
-    .bookingContainer {
-        padding: 0 1rem;
-    }
+  .bookingContainer {
+    padding: 0 1rem;
+  }
 
-    .headerSection {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
+  .headerSection {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
 
-    .bookingContainer {
-        flex-direction: column;
-    }
+  .bookingContainer {
+    flex-direction: column;
+  }
 
-    .timeColumn {
-        width: 100%;
-        flex-direction: row;
-        overflow-x: auto;
-    }
+  .timeColumn {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
 
-    .timeLabel {
-        width: 80px;
-        min-width: 80px;
-        border-bottom: none;
-        border-right: 1px solid #e5e5e5;
-    }
+  .timeLabel {
+    width: 80px;
+    min-width: 80px;
+    border-bottom: none;
+    border-right: 1px solid #e5e5e5;
+  }
 
-    .weekGrid {
-        min-width: auto;
-    }
+  .weekGrid {
+    min-width: auto;
+  }
 
-    .weekDays {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .weekDays {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
-    .weekDates {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .weekDates {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
+  .timeColumn {
+    left: -60px;
+    /* 모바일에서 시간 컬럼 위치 조정 */
+  }
 
+  .weekNavigationButton {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    top: 60px;
+  }
 
-    .timeColumn {
-        left: -60px;
-        /* 모바일에서 시간 컬럼 위치 조정 */
-    }
+  .weekNavigationButton:first-of-type {
+    left: -50px;
+  }
 
-    .weekNavigationButton {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
-        top: 60px;
-    }
-
-    .weekNavigationButton:first-of-type {
-        left: -50px;
-    }
-
-    .weekNavigationButton:last-of-type {
-        right: -50px;
-    }
-
-
+  .weekNavigationButton:last-of-type {
+    right: -50px;
+  }
 }
 
 /* 헤더 고정 보정: 페이지 상단 여백 */
 .main {
-    padding-top: 180px;
+  padding-top: 180px;
 }
 
 @media (max-width: 768px) {
-    .main {
-        padding-top: 120px;
-    }
+  .main {
+    padding-top: 120px;
+  }
 }
 
 /* 에러 메시지 스타일 */
 .errorMessage {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.3);
-    color: #dc3545;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    font-size: 14px;
-    text-align: center;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* 로딩 메시지 스타일 */
 .loadingMessage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 400px;
-    font-size: 18px;
-    color: #666666;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  font-size: 18px;
+  color: #666666;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
 }
 
 /* 비활성화된 입력 필드 스타일 */
 .disabledInput {
-    background-color: #f5f5f5 !important;
-    color: #666666 !important;
-    cursor: not-allowed !important;
-    opacity: 0.7 !important;
+  background-color: #f5f5f5 !important;
+  color: #666666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .title {
+    color: #ffffff;
+  }
 }

@@ -10,9 +10,10 @@ import GlassContainer from "../components/GlassContainer";
 export default function Home() {
   const containerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // 모바일 감지
   useEffect(() => {
+    // 모바일 감지
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -20,13 +21,18 @@ export default function Home() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+    // 다크모드 감지
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDarkMode(mediaQuery.matches);
 
-  // 다크모드 감지
-  const isDarkMode =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const listener = (e) => setIsDarkMode(e.matches);
+    mediaQuery.addEventListener("change", listener);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      mediaQuery.removeEventListener("change", listener);
+    };
+  }, []);
 
   const ITEMS_PER_PAGE = 4;
   const pageWidthRef = useRef(1105);

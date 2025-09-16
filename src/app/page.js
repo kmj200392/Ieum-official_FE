@@ -1,89 +1,26 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/OnboardingFooter";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 import GlassContainer from "../components/GlassContainer";
 
 export default function Home() {
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // 모바일 감지
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const HEADER_OFFSET = 83; // fixed header height compensation
-    let isAnimating = false;
-    let lastWheelTime = 0;
-    const sectionNodes = Array.from(el.querySelectorAll("section"));
-
-    const getCurrentIndex = () => {
-      const scrollTop = el.scrollTop;
-      let idx = 0;
-      for (let i = 0; i < sectionNodes.length; i++) {
-        const top = sectionNodes[i].offsetTop;
-        if (scrollTop + HEADER_OFFSET >= top) idx = i;
-      }
-      return idx;
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    const animateTo = (top) => {
-      isAnimating = true;
-      el.scrollTo({ top, behavior: "smooth" });
-      const unlock = () => { isAnimating = false; };
-      const t = setTimeout(unlock, 700);
-      el.addEventListener("scrollend", () => { clearTimeout(t); unlock(); }, { once: true });
-    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
 
-    const scrollToIndex = (idx) => {
-      const clamped = Math.max(0, Math.min(sectionNodes.length - 1, idx));
-      if (clamped === sectionNodes.length - 1) {
-        animateTo(el.scrollHeight - el.clientHeight);
-        return;
-      }
-      const targetTop = sectionNodes[clamped].offsetTop;
-      animateTo(targetTop);
-    };
-
-    const onWheel = (e) => {
-      const now = performance.now();
-      if (isAnimating || now - lastWheelTime < 300) {
-        e.preventDefault();
-        return;
-      }
-      const delta = e.deltaY;
-      if (Math.abs(delta) < 10) return;
-      e.preventDefault();
-      lastWheelTime = now;
-      const cur = getCurrentIndex();
-      scrollToIndex(cur + (delta > 0 ? 1 : -1));
-    };
-
-    const onKey = (e) => {
-      if (isAnimating) return;
-      if (["ArrowDown", "PageDown"].includes(e.key)) {
-        e.preventDefault();
-        scrollToIndex(getCurrentIndex() + 1);
-      } else if (["ArrowUp", "PageUp"].includes(e.key)) {
-        e.preventDefault();
-        scrollToIndex(getCurrentIndex() - 1);
-      } else if (e.key === "Home") {
-        e.preventDefault();
-        scrollToIndex(0);
-      } else if (e.key === "End") {
-        e.preventDefault();
-        scrollToIndex(sectionNodes.length - 1);
-      }
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("keydown", onKey);
-
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("keydown", onKey);
-    };
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const ITEMS_PER_PAGE = 4;
@@ -215,6 +152,145 @@ export default function Home() {
     window.addEventListener('resize', fitSingleLine);
     return () => window.removeEventListener('resize', fitSingleLine);
   }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const HEADER_OFFSET = 83; // fixed header height compensation
+    let isAnimating = false;
+    let lastWheelTime = 0;
+    const sectionNodes = Array.from(el.querySelectorAll("section"));
+
+    const getCurrentIndex = () => {
+      const scrollTop = el.scrollTop;
+      let idx = 0;
+      for (let i = 0; i < sectionNodes.length; i++) {
+        const top = sectionNodes[i].offsetTop;
+        if (scrollTop + HEADER_OFFSET >= top) idx = i;
+      }
+      return idx;
+    };
+
+    const animateTo = (top) => {
+      isAnimating = true;
+      el.scrollTo({ top, behavior: "smooth" });
+      const unlock = () => { isAnimating = false; };
+      const t = setTimeout(unlock, 700);
+      el.addEventListener("scrollend", () => { clearTimeout(t); unlock(); }, { once: true });
+    };
+
+    const scrollToIndex = (idx) => {
+      const clamped = Math.max(0, Math.min(sectionNodes.length - 1, idx));
+      if (clamped === sectionNodes.length - 1) {
+        animateTo(el.scrollHeight - el.clientHeight);
+        return;
+      }
+      const targetTop = sectionNodes[clamped].offsetTop;
+      animateTo(targetTop);
+    };
+
+    const onWheel = (e) => {
+      const now = performance.now();
+      if (isAnimating || now - lastWheelTime < 300) {
+        e.preventDefault();
+        return;
+      }
+      const delta = e.deltaY;
+      if (Math.abs(delta) < 10) return;
+      e.preventDefault();
+      lastWheelTime = now;
+      const cur = getCurrentIndex();
+      scrollToIndex(cur + (delta > 0 ? 1 : -1));
+    };
+
+    const onKey = (e) => {
+      if (isAnimating) return;
+      if (["ArrowDown", "PageDown"].includes(e.key)) {
+        e.preventDefault();
+        scrollToIndex(getCurrentIndex() + 1);
+      } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        scrollToIndex(getCurrentIndex() - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        scrollToIndex(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        scrollToIndex(sectionNodes.length - 1);
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("keydown", onKey);
+
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  // 모바일에서는 방패 로고만 표시
+  if (isMobile) {
+    return (
+      <>
+        <Header />
+        <main className={styles.canvas} style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 'calc(100vh - 83px)', // 헤더 높이 제외
+          backgroundColor: 'transparent',
+          gap: '24px',
+          overflow: 'hidden', // Footer 등이 보이지 않도록
+          position: 'relative'
+        }}>
+          <Image
+            src="/onboarding-hero.png"
+            alt="고려대학교 정보대학 로고"
+            width={300}
+            height={280}
+            priority
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '60vh',
+              objectFit: 'contain'
+            }}
+          />
+          <p style={{
+            fontSize: '18px',
+            lineHeight: '1.5',
+            textAlign: 'center',
+            color: '#1a1a1a',
+            margin: 0,
+            padding: '0 20px',
+            fontFamily: 'Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
+            fontWeight: '500'
+          }}>
+            다양한 컨텐츠를 보시려면<br />
+            노트북으로 접속해주세요
+          </p>
+          <Link href="/lockers" style={{
+            fontSize: '16px',
+            fontFamily: 'KIMM_BOLD, sans-serif',
+            color: '#1a1a1a',
+            textDecoration: 'none',
+            padding: '12px 24px',
+            border: '2px solid #1a1a1a',
+            borderRadius: '8px',
+            backgroundColor: 'transparent',
+            transition: 'all 0.2s ease',
+            textAlign: 'center',
+            display: 'inline-block',
+            marginTop: '8px'
+          }}>
+            사물함 신청하러가기
+          </Link>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

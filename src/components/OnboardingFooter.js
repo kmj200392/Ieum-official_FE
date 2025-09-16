@@ -1,7 +1,28 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./OnboardingFooter.module.css";
 
 export default function Footer() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    // 모바일 감지
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // 모바일에서는 Footer 렌더링하지 않음
+    if (isMobile) {
+        return null;
+    }
+
     return (
         <footer className={styles.footer}>
             <div className={styles.topRow}>

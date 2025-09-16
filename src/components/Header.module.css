@@ -1,13 +1,12 @@
 /* Header (wireframe minimal) */
 .header {
     width: 100%;
-    max-width: 1512px;
-    margin: 0 auto;
+    margin: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 50px 75px 20px;
+    padding: 50px 0 20px;
     background: transparent;
     position: static;
     /* 다른 페이지에서는 스크롤에 따라오지 않도록 static으로 설정 */
@@ -23,6 +22,7 @@
 .logo {
     display: flex;
     align-items: center;
+    margin-left: 75px;
 }
 
 .logo a {
@@ -34,6 +34,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
+    margin-right: 75px;
 }
 
 .myReservation {
@@ -47,6 +48,14 @@
 @media (max-width: 768px) {
     .header {
         width: 100vw;
-        padding: 24px 20px 12px;
+        padding: 24px 0 12px;
+    }
+
+    .logo {
+        margin-left: 20px;
+    }
+
+    .headerRight {
+        margin-right: 20px;
     }
 }

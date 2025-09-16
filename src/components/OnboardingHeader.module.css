@@ -1,12 +1,11 @@
 .header {
     width: 100%;
-    max-width: 1512px;
-    margin: 0 auto;
+    margin: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 50px 75px 20px;
+    padding: 50px 0 20px;
     position: fixed;
     top: 0;
     left: 0;
@@ -19,6 +18,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-left: 75px;
 }
 
 .brandText {
@@ -36,6 +36,7 @@
     display: flex;
     align-items: center;
     gap: 30px;
+    margin-right: 75px;
 }
 
 .navLink {
@@ -60,4 +61,14 @@
 
 .menuIcon {
     /* In Figma, inner icon 24x16 located at (4,8) within 32x32. Centering visually matches; SVG path uses absolute width/height. */
+}
+
+@media (max-width: 768px) {
+    .leftGroup {
+        margin-left: 20px;
+    }
+    
+    .nav {
+        margin-right: 20px;
+    }
 }

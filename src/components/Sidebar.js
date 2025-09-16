@@ -101,9 +101,10 @@ export default function Sidebar() {
                 </svg>
               </button>
               <div className={styles.sidebarContent}>
-                <a href="/booking" className={styles.sidebarMenuItem}>
+                {/* 일시적으로 숨김 - 추후 활성화 예정 */}
+                {/* <a href="/booking" className={styles.sidebarMenuItem}>
                   학생회실 대관
-                </a>
+                </a> */}
                 <a href="/lockers" className={styles.sidebarMenuItem}>
                   사물함
                 </a>

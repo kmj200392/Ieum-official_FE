@@ -1,61 +1,68 @@
 /* Header (wireframe minimal) */
 .header {
-    width: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 50px 0 20px;
-    background: transparent;
-    position: static;
-    /* 다른 페이지에서는 스크롤에 따라오지 않도록 static으로 설정 */
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 50px 0 20px;
+  background: transparent;
+  position: static;
+  /* 다른 페이지에서는 스크롤에 따라오지 않도록 static으로 설정 */
 }
 
 .headerContent {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    margin-left: 75px;
+  display: flex;
+  align-items: center;
+  margin-left: 75px;
 }
 
 .logo a {
-    outline: none;
-    text-decoration: none;
+  outline: none;
+  text-decoration: none;
 }
 
 .headerRight {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-right: 75px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-right: 75px;
 }
 
 .myReservation {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 1.2;
-    color: #000;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #000;
 }
 
 @media (max-width: 768px) {
-    .header {
-        width: 100vw;
-        padding: 24px 0 12px;
-    }
+  .header {
+    width: 100vw;
+    padding: 24px 0 12px;
+  }
 
-    .logo {
-        margin-left: 20px;
-    }
+  .logo {
+    margin-left: 20px;
+  }
 
-    .headerRight {
-        margin-right: 20px;
-    }
+  .headerRight {
+    margin-right: 20px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* CSS rules for dark mode */
+  .myReservation {
+    color: #ffffff;
+  }
 }

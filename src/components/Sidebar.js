@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Sidebar.module.css";
 
-export default function Sidebar() {
+export default function Sidebar({ isMobile }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [portalEl, setPortalEl] = useState(null);
 
@@ -101,10 +101,12 @@ export default function Sidebar() {
                 </svg>
               </button>
               <div className={styles.sidebarContent}>
-                {/* 일시적으로 숨김 - 추후 활성화 예정 */}
-                {/* <a href="/booking" className={styles.sidebarMenuItem}>
-                  학생회실 대관
-                </a> */}
+                {/* 모바일에서 일시적으로 숨김 - 추후 활성화 예정 */}
+                {!isMobile && (
+                  <a href="/booking" className={styles.sidebarMenuItem}>
+                    학생회실 대관
+                  </a>
+                )}
                 <a href="/lockers" className={styles.sidebarMenuItem}>
                   사물함
                 </a>

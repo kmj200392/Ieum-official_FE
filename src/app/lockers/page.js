@@ -38,6 +38,7 @@ export default function LockersPage() {
   const [lockerLocations, setLockerLocations] = useState([]);
   const [lockersLoading, setLockersLoading] = useState(false);
   const [hasMyLocker, setHasMyLocker] = useState(false);
+  const [myLocker, setMyLocker] = useState(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -82,6 +83,11 @@ export default function LockersPage() {
         myId && list.some((l) => String(l.owner || "") === myId)
       );
       setHasMyLocker(owned);
+
+      const assignedLocker = list.find(
+        (locker) => String(locker.owner || "") === myId
+      );
+      setMyLocker(assignedLocker);
 
       const locationToItems = new Map();
       list.forEach((item) => {
@@ -224,8 +230,8 @@ export default function LockersPage() {
     setIsConfirmOpen(false);
   };
 
-  const getSelectedLockerNumber = () =>
-    Number(String(selectedLocker).replace("locker-", ""));
+  const getSelectedLockerNumber = (locker) =>
+    Number(String(locker).replace("locker-", ""));
 
   const startApply = () => {
     if (actionLoading || releaseLoading || confirmLoading) return;
@@ -237,7 +243,7 @@ export default function LockersPage() {
 
   const handleHoldLocker = async () => {
     if (!selectedLocker) return;
-    const lockerNumber = getSelectedLockerNumber();
+    const lockerNumber = getSelectedLockerNumber(selectedLocker);
     const token = getLockerAccessToken();
     if (!token) {
       setActionError("인증 토큰이 없습니다. 다시 로그인해 주세요.");
@@ -298,10 +304,10 @@ export default function LockersPage() {
       setSuccessMessage(messageText);
       if (minutes) {
         setConfirmBodyText(
-          `${minutes}분동안 확정하지 않으면\n선택이 취소됩니다`
+          `${minutes}분동안 확정하지 않으면\n선택이 취소됩니다.`
         );
       } else {
-        setConfirmBodyText(`일정 시간동안 확정하지 않으면\n선택이 취소됩니다`);
+        setConfirmBodyText(`일정 시간동안 확정하지 않으면\n선택이 취소됩니다.`);
       }
     } catch (e) {
       setActionError(e?.message || "요청 중 오류가 발생했습니다.");
@@ -312,7 +318,7 @@ export default function LockersPage() {
 
   const handleReleaseHold = async () => {
     if (!selectedLocker) return closeConfirm();
-    const lockerNumber = getSelectedLockerNumber();
+    const lockerNumber = getSelectedLockerNumber(selectedLocker);
     const token = getLockerAccessToken();
     if (!token) return closeConfirm();
     setReleaseLoading(true);
@@ -340,7 +346,7 @@ export default function LockersPage() {
 
   const handleConfirm = async () => {
     if (!selectedLocker) return;
-    const lockerNumber = getSelectedLockerNumber();
+    const lockerNumber = getSelectedLockerNumber(selectedLocker);
     const token = getLockerAccessToken();
     if (!token) return;
     setConfirmLoading(true);
@@ -373,6 +379,22 @@ export default function LockersPage() {
       setConfirmLoading(false);
     }
   };
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // 모바일 감지
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
   if (!isLoggedIn) {
     return (
@@ -475,7 +497,13 @@ export default function LockersPage() {
                       selectedLocker={selectedLocker}
                       onLockerSelect={setSelectedLocker}
                       columns={location.columns}
-                      disableSelection={hasMyLocker}
+                      //   disableSelection={hasMyLocker}
+                      hasMyLocker={hasMyLocker}
+                      assignedSelection={() => {
+                        if (hasMyLocker) {
+                          setIsConfirmOpen(true);
+                        }
+                      }}
                     />
                   </LockerAccordion>
                 )
@@ -515,31 +543,60 @@ export default function LockersPage() {
           >
             <GlassContainer
               radius={50}
-              padding={50}
+              padding={isMobile ? 20 : 50}
               variant="modal"
               className={`${styles.glassModal} ${styles.successModal}`}
             >
-              <h2 className={styles.glassModalTitle}>신청하시겠습니까?</h2>
-
-              <div className={styles.glassModalBody}>
-                <p className={styles.successBody}>
-                  {confirmBodyText.split("\n").map((line, idx) => (
-                    <React.Fragment key={idx}>
-                      {line}
-                      {idx === 0 && <br />}
-                    </React.Fragment>
-                  ))}
-                </p>
-              </div>
-
+              {" "}
+              {hasMyLocker ? (
+                <>
+                  {" "}
+                  <h2 className={styles.glassModalTitle}>
+                    이미 신청된
+                    <br />
+                    사물함이 있습니다.
+                  </h2>
+                  <div className={styles.glassModalBody}>
+                    {myLocker && (
+                      <p className={styles.successBody}>
+                        신청하신 사물함 번호는
+                        <br />
+                        <span style={{ color: "#6F3037", fontWeight: "bold" }}>
+                          {getSelectedLockerNumber(myLocker.locker_id)}
+                        </span>
+                        번 입니다.
+                      </p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className={styles.glassModalTitle}>신청하시겠습니까?</h2>
+                  <div className={styles.glassModalBody}>
+                    <p className={styles.successBody}>
+                      {confirmBodyText.split("\n").map((line, idx) => (
+                        <React.Fragment key={idx}>
+                          {line}
+                          {idx === 0 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </div>
+                </>
+              )}
               {actionError && (
                 <div className={styles.errorMessage}>{actionError}</div>
               )}
-
               <div className={styles.glassModalActions}>
                 <button
                   className={styles.successButton}
-                  onClick={handleConfirm}
+                  onClick={() => {
+                    if (hasMyLocker) {
+                      setIsConfirmOpen(false);
+                    } else {
+                      handleConfirm();
+                    }
+                  }}
                   disabled={actionLoading || releaseLoading || confirmLoading}
                 >
                   확인
@@ -562,7 +619,7 @@ export default function LockersPage() {
           >
             <GlassContainer
               radius={50}
-              padding={50}
+              padding={isMobile ? 20 : 50}
               variant="modal"
               className={`${styles.glassModal} ${styles.successModal}`}
             >
@@ -571,7 +628,7 @@ export default function LockersPage() {
                 <p className={styles.successBody}>
                   선택하신 사물함 신청이
                   <br />
-                  완료되었습니다
+                  완료되었습니다.
                 </p>
               </div>
               <div className={styles.glassModalActions}>
@@ -599,7 +656,7 @@ export default function LockersPage() {
           >
             <GlassContainer
               radius={50}
-              padding={50}
+              padding={isMobile ? 20 : 50}
               variant="modal"
               className={`${styles.glassModal} ${styles.successModal}`}
             >

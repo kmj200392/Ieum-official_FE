@@ -65,7 +65,7 @@ export default function Header({ variant, showMyReservation = false }) {
             </>
           )}
 
-          <Sidebar />
+          <Sidebar isMobile={isMobile} />
         </nav>
       </header>
     );
@@ -89,7 +89,7 @@ export default function Header({ variant, showMyReservation = false }) {
           {showMyReservation && (
             <span className={simpleStyles.myReservation}>내 예약 현황</span>
           )}
-          <Sidebar />
+          <Sidebar isMobile={isMobile} />
         </div>
       </header>
     );

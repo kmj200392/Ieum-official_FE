@@ -112,7 +112,7 @@
   flex-direction: column;
   align-items: center;
   gap: 30px;
-  width: 100%;
+  width: 90%;
   margin: 0 auto;
   padding: 0 0 50px;
 }
@@ -200,28 +200,6 @@
     transform: translateY(0);
   }
 }
-
-@media (max-width: 768px) {
-  .title {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-    width: auto;
-    padding: 0 16px;
-  }
-
-  .lockerPageContainer {
-    width: 100%;
-    padding: 100px 10px 50px;
-  }
-
-  .accordionContainer {
-    padding: 40px 20px;
-  }
-}
-
 /* 모달 - Booking과 동일 스타일 */
 .modalOverlay {
   position: fixed;
@@ -398,7 +376,7 @@
 .successBody {
   font-family: "Pretendard", sans-serif;
   font-weight: 400;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1.3em;
   color: #2c2c2c;
   text-align: center;
@@ -406,12 +384,13 @@
 }
 
 .successModal {
-  width: 515px;
-  height: 413px;
+  width: 450px;
+  height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 50px;
 }
 
 .lockerContainerText {
@@ -425,5 +404,41 @@
   .subtitle,
   .lockerContainerText {
     color: #ffffff;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    width: auto;
+    padding: 0 16px;
+  }
+  .glassModal {
+    gap: 20px;
+  }
+  .lockerPageContainer {
+    width: 100%;
+    padding: 100px 10px 50px;
+  }
+  .accordionContainer {
+    padding: 40px 20px;
+  }
+  .glassModalTitle {
+    font-size: 24px;
+    line-height: 1.5;
+  }
+  .successModal {
+    width: 180px;
+    /* height: 230px; */
+  }
+  .successBody {
+    font-size: 20px;
+  }
+  .successButton {
+    width: 150px;
   }
 }
